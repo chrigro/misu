@@ -61,13 +61,13 @@ if have_scipy:
         val, unit, _ = const.physical_constants[name]
         quant = misulib.quantity_from_string(unit)
         # put them in the module namespace
-        globals()[shortname] = value * quantity
+        globals()[shortname] = val * quant
 else:
     for name, shortname in available_constants.items():
         val, unit = fallback_values[name]
         quant = misulib.quantity_from_string(unit)
         # put them in the module namespace
-        globals()[shortname] = value * quantity
+        globals()[shortname] = val * quant
 
 
 if __name__ == "__main__":
