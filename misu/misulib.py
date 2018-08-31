@@ -68,21 +68,25 @@ def quantity_from_string(string):
     -1.158e+05 m/s kg
 
     """
-    # Multiplication: replace all whitespace surounded by a-z,A-Z,0-9 with *
-    string = re.sub(r'([a-z,A-Z,0-9])(\s+)([a-z,A-Z,0-9])',r'\1*\3' , string)
+    # empty string?
+    if not string.strip() == '':
+        # Multiplication: replace all whitespace surounded by a-z,A-Z,0-9 with *
+        string = re.sub(r'([a-z,A-Z,0-9])(\s+)([a-z,A-Z,0-9])',r'\1*\3' , string)
 
-    # Exponentiation: replace all ^ with **
-    string = re.sub(r'\^', r'**' , string)
+        # Exponentiation: replace all ^ with **
+        string = re.sub(r'\^', r'**' , string)
 
-    res = None
-    try:
-        res = eval(string)
-    except NameError:
-        print('String {s} not understood.'.format(string))
         res = None
-    except SyntaxError:
-        print('String {s} not understood.'.format(string))
-        res = None
+        try:
+            res = eval(string)
+        except NameError:
+            print('String {} not understood.'.format(string))
+            res = None
+        except SyntaxError:
+            print('String {} not understood.'.format(string))
+            res = None
+    else:
+        res = Quantity(1.0)
     return res
 
 
