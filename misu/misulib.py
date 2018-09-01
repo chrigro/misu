@@ -9,6 +9,10 @@ import misu.engine as engine
 
 
 class UnitNamespace(object):
+    """A namespace for all defined units.
+
+    """
+
     def add_unit(
         self,
         symbols,
@@ -61,7 +65,7 @@ class UnitNamespace(object):
                 symbol = symbol.strip()
                 if symbol == "":
                     continue
-                engine.UnitRegistry[symbol] = quantity
+                self._add_to_registry(symbol, quantity)
                 setattr(self, "{s}".format(s=symbol), quantity)
             except:
                 print(traceback.format_exc())
@@ -81,7 +85,18 @@ class UnitNamespace(object):
             prefsymb = "{p}{s}".format(p=prefix, s=symbol)
             prefquant = 10 ** (float(siprefixes_sym[prefix].exponent)) * quantity
             setattr(self, prefsymb, prefquant)
-            engine.UnitRegistry[prefsymb] = prefquant
+            self._add_to_registry(prefsymb, prefquant)
+
+    def _add_to_registry(self, symbol, quantity):
+        """Add symbol representing Quantity to the UnitRegistry.
+
+        """
+        if not symbol in engine.UnitRegistry.keys():
+            engine.UnitRegistry[symbol] = quantity
+        else:
+            raise ValueError(
+                "Unit symbol {s} already present in the registry.".format(s=symbol)
+            )
 
 
 # def createUnit(
