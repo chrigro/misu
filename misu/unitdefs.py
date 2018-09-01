@@ -1,7 +1,10 @@
 # coding=utf-8
 
+from __future__ import division, print_function
 from misu.engine import addType, Quantity
 from misu.misulib import createUnit
+
+
 
 # Population of units data
 # SI root units
@@ -23,6 +26,7 @@ createUnit(
     mustCreateMetricPrefixes=True,
     unitCategory="Mass",
 )
+print('g' in globals())
 g.setRepresent(as_unit=kg, symbol="kg")
 
 createUnit(
