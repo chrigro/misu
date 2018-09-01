@@ -1,0 +1,15 @@
+{
+    "hertz" : {
+        "symbols" : ["Hz", "hertz"],
+        "representation in SI" : "s^-1",
+        "representative symbol" : "Hz",
+        "metric prefixes for" : ["Hz"],
+        "category" : "Frequency",
+        "skipped prefixes" : [],
+        "used in contexts" : ["default"]
+    }
+}
+
+
+
+
