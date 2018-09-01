@@ -3,64 +3,134 @@ from __future__ import division, print_function
 import sys
 import traceback
 import re
+import json
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
 
+# Population of units data
+# SI root units
 
 class UnitNamespace(object):
     """A namespace for all defined units.
 
     """
 
+    def __init__():
+        """Initialize the unit namespace.
+
+        We create all SI base units plus the dimensionless unit.
+
+        """
+    dimensionless = Quantity(1.0)
+    addType(dimensionless, "Dimensionless")
+
+    createUnit(
+        "m metre metres meter meters",
+        Quantity(1.0),
+        valdict=dict(m=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Length",
+    )
+
+    createUnit(
+        "g gram grams",
+        Quantity(1.0e-3),
+        valdict=dict(kg=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Mass",
+    )
+    print('g' in globals())
+    g.setRepresent(as_unit=kg, symbol="kg")
+
+    createUnit(
+        "s second sec seconds secs",
+        Quantity(1.0),
+        valdict=dict(s=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Time",
+        metricSkipFunction=lambda p: p == "a",
+    )  # makes "as" which is illegal
+
+    createUnit(
+        "A ampere amperes amp amps",
+        Quantity(1.0),
+        valdict=dict(A=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Current",
+    )
+
+    createUnit(
+        "K kelvin",
+        Quantity(1.0),
+        valdict=dict(K=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Temperature",
+    )
+
+    createUnit(
+        "ca candela cd",
+        Quantity(1.0),
+        valdict=dict(ca=1.0),
+        mustCreateMetricPrefixes=False,
+        unitCategory="Luminous intensity",
+    )
+
+    createUnit(
+        "mol mole moles",
+        Quantity(1.0),
+        valdict=dict(mole=1.0),
+        mustCreateMetricPrefixes=True,
+        unitCategory="Substance",
+    )
+    createMetricPrefixes("mole")
+
+
     def add_unit(
         self,
         symbols,
         quantity,
-        create_metric_prefixes=False,
-        valdict=None,
-        unit_category=None,
+        create_metric_prefixes_for=[],
+        unit_category='',
         metric_skip_function=None,
-        notes=None,
+        valdict=dict(),
     ):
         """Add a unit to the namespace.
 
         Parameters
         ----------
-        symbols : string of space-delimited unit symbols
+        symbols : list of unit symbols
             These will be put into the class namespace, and will be entered as keys in
             the global UnitRegistry.
 
         quantity: Quantity
             Representation of the unit in a unit defined earlier.
 
-        create_metric_prefixes : bool (default: False)
-            Create derived units using the metric prefixes **for the first symbol only**.
+        create_metric_prefixes_for : list of unit symbols (default: empty list)
+            List of symbols (must also be in symbols) to create derived units with the 
+            metric prefixes.
+
+        unit_category : string or None (default: None)
+            Category the unit belongs to. Only the first symbol in the list is used.
+
+        metric_skip_function : callable (default: None)
+            Callable that returns true for combinations of symbol names and metric 
+            prefixes for which the prefixed unit should not be created.
 
         valdict : dict or None (default: None)
             Dictionary with base SI units as keys and the exponent as value. Only used
             to defined the SI units. Derive other units from them using the quantity
             argument.
 
-        unit_category : string (default: None)
-            Category the unit belongs to.
-
-        metric_skip_function : callable
-            Callable that returns true for metric prefixes that should not be created.
-
-        notes : string
-            Any additional notes
-
         """
         if valdict is not None:
             quantity.setValDict(valdict)
-        first_symbol = symbols.strip().split(" ")[0].strip()
         # Add to category
-        if unit_category:
+        if unit_category is not None:
             engine.addType(quantity, unit_category)
-            quantity.setRepresent(as_unit=quantity, symbol=first_symbol)
+            quantity.setRepresent(as_unit=quantity, symbol=symbols[0].strip())
         # Add to registry and namespace
-        for i, symbol in enumerate(symbols.split(" ")):
+        for i, symbol in symbols:
             try:
                 symbol = symbol.strip()
                 if symbol == "":
@@ -71,10 +141,10 @@ class UnitNamespace(object):
                 print(traceback.format_exc())
                 raise
         # Metric prefixes for the first symbol
-        if create_metric_prefixes:
-            self._create_metric_prefixes(first_symbol, quantity, metric_skip_function)
+        if for symbol in create_metric_prefixes:
+            self.create_metric_prefixes(first_symbol, quantity, metric_skip_function)
 
-    def _create_metric_prefixes(self, symbol, quantity, skipfunction=None):
+    def create_metric_prefixes(self, symbol, quantity, skipfunction=None):
         """ Populates the UnitRegistry and the namespace with all the
         SI-prefixed versions of the given symbol.
 
