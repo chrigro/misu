@@ -2,9 +2,7 @@
 from __future__ import division, print_function
 import sys
 import traceback
-import math
 import re
-from misu.engine import *
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
