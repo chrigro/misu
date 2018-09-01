@@ -3,6 +3,7 @@ from __future__ import division, print_function
 import sys
 import re
 import json
+import inspect
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
@@ -28,6 +29,7 @@ class UnitNamespace(object):
         # dimensionless is special
         self.dimensionless = engine.Quantity(1.0)
         engine.addType(self.dimensionless, "Dimensionless")
+        self.known_units = ['dimensionless']
 
         # meter
         self.add_unit(
@@ -83,17 +85,6 @@ class UnitNamespace(object):
             unit_category="Thermodynamic temperature",
             metric_skip_function=None,
             valdict=dict(K=1.0),
-        )
-
-        # candela
-        self.add_unit(
-            symbols=["cd", "candela", "ca"],
-            quantity=engine.Quantity(1.0),
-            representative_symbol="cd",
-            create_metric_prefixes_for=["cd"],
-            unit_category="Luminous intensity",
-            metric_skip_function=None,
-            valdict=dict(cd=1.0),
         )
 
         # candela
@@ -174,8 +165,8 @@ class UnitNamespace(object):
             symbol = symbol.strip()
             if symbol == "":
                 continue
+            self._add_quant_attr(symbol, quantity)
             self._add_to_registry(symbol, quantity)
-            setattr(self, symbol, quantity)
         # Metric prefixes for the first symbol
         self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
         for symbol in create_metric_prefixes_for:
@@ -191,7 +182,7 @@ class UnitNamespace(object):
                 continue
             prefsymb = "{p}{s}".format(p=prefix, s=symbol)
             prefquant = 10 ** (float(siprefixes_sym[prefix].exponent)) * quantity
-            setattr(self, prefsymb, prefquant)
+            self._add_quant_attr(prefsymb, prefquant)
             self._add_to_registry(prefsymb, prefquant)
 
     def _check_metric_prefix_request(self, metricpref_list, symbols):
@@ -213,6 +204,11 @@ class UnitNamespace(object):
                 )
             )
 
+    def _add_quant_attr(self, symb, quant):
+        """Add the quantity as an attribute to the namespace."""
+        setattr(self, symb, quant)
+        self.known_units.append(symb)
+
     def _add_to_registry(self, symbol, quantity):
         """Add symbol representing Quantity to the UnitRegistry.
 
@@ -223,6 +219,27 @@ class UnitNamespace(object):
             raise ValueError(
                 "Unit symbol {s} already present in the registry.".format(s=symbol)
             )
+
+
+def units_to_this_ns(unit_namespace):
+    """Add the units defined in unit_namespace to the callers scope.
+
+    Use call this to have direct access to the units, i.e. in your module do:
+
+        import misu
+        u = misu.UnitNamespace()
+        misu.units_to_this_ns(u)
+
+    Note that this uses a bit of black magic...
+
+    """
+    stack = inspect.stack()
+    try:
+        locals_ = stack[1][0].f_locals
+    finally:
+        del stack
+    for symb in unit_namespace.known_units:
+        locals_[symb] = getattr(unit_namespace, symb)
 
 
 # def quantity_from_string(string):
@@ -312,3 +329,8 @@ class UnitNamespace(object):
 
 #     # For IDEs, make sure the arg lists propagate through to the user
 #     return check_types
+
+if __name__ == '__main__':
+    u = UnitNamespace()
+    units_to_global_ns(u)
+    print(m)

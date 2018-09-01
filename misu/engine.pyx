@@ -72,8 +72,8 @@ cdef inline void copyunits(Quant source, Quant dest):
 QuantityType = {}
 cpdef addType(Quantity q, str name):
     if q.unit_as_tuple() in QuantityType:
-        raise Exception('This unit def already registered, owned by: {}'.format(
-            QuantityType[q.unit_as_tuple()]))
+        raise Exception('The unit {} already registered, owned by: {}'.format(
+            str(q.unitString()), QuantityType[q.unit_as_tuple()]))
     QuantityType[q.unit_as_tuple()] = name
 
 
@@ -431,7 +431,7 @@ cdef class Quantity:
     cpdef tuple as_tuple(self):
         return (self.magnitude, self.unit_as_tuple())
 
-    def _unitString(self):
+    def unitString(self):
         if self.unit_as_tuple() in RepresentCache:
             r = RepresentCache[self.unit_as_tuple()]
             ret = '{}'.format(r['symbol'])
@@ -453,7 +453,7 @@ cdef class Quantity:
             r = RepresentCache[self.unit_as_tuple()]
             return r['symbol']
         else:
-            return self._unitString()
+            return self.unitString()
 
     def _getRepresentTuple(self):
         if self.unit_as_tuple() in RepresentCache:
@@ -463,7 +463,7 @@ cdef class Quantity:
             format_spec = r['format_spec']
         else:
             mag = self.magnitude
-            symbol = self._unitString()
+            symbol = self.unitString()
             format_spec = ''
         # Temporary fix for a numpy display issue
         if not type(mag) in [float, int]:
@@ -921,7 +921,7 @@ cdef class QuantityNP:
             out.append(self.unit[i])
         return out
 
-    def _unitString(self):
+    def unitString(self):
         if self.unit_as_tuple() in RepresentCache:
             r = RepresentCache[self.unit_as_tuple()]
             ret = '{}'.format(r['symbol'])
@@ -943,7 +943,7 @@ cdef class QuantityNP:
             r = RepresentCache[self.unit_as_tuple()]
             return r['symbol']
         else:
-            return self._unitString()
+            return self.unitString()
 
     def _getRepresentTuple(self):
         if self.unit_as_tuple() in RepresentCache:
@@ -953,7 +953,7 @@ cdef class QuantityNP:
             format_spec = r['format_spec']
         else:
             mag = self.magnitude
-            symbol = self._unitString()
+            symbol = self.unitString()
             format_spec = ''
         # Temporary fix for a numpy display issue
         if not type(mag) in [float, int]:
