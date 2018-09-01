@@ -68,16 +68,6 @@
         "category" : "Voltage",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
-    },
-    "volt" : {
-        "symbols" : ["V", "volt"],
-        "representation in SI or earlier defined unit" : "W / A",
-        "scale factor" : 1.0,
-        "representative symbol" : "V",
-        "metric prefixes for" : ["V"],
-        "category" : "Voltage",
-        "skipped prefixes" : [],
-        "used in contexts" : ["all"]
     }
 }
 
