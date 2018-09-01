@@ -86,7 +86,7 @@ def quantity_from_string(string):
             print('String {} not understood.'.format(string))
             res = None
     else:
-        res = Quantity(1.0)
+        res = dimensionless
     return res
 
 
