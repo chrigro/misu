@@ -15,7 +15,7 @@ class UnitNamespace(object):
 
     """
 
-    def __init__(self, context="all"):
+    def __init__(self, context="default"):
         """Initialize the unit namespace.
 
         We create all SI base units plus the dimensionless unit.
@@ -36,6 +36,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["m", "metre", "metres", "meter", "meters"],
             sidict=dict(m=1.0),
+            scale_factor=1.0,
             representative_symbol="m",
             create_metric_prefixes_for=["m"],
             unit_category="Length",
@@ -46,6 +47,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["g", "grams", "gram"],
             sidict=dict(kg=1.0),
+            scale_factor=1.0,
             representative_symbol=None,
             create_metric_prefixes_for=["g"],
             unit_category="Mass",
@@ -57,6 +59,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["s", "second", "sec", "seconds", "secs"],
             sidict=dict(s=1.0),
+            scale_factor=1.0,
             representative_symbol="s",
             create_metric_prefixes_for=["s"],
             unit_category="Time",
@@ -67,6 +70,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["A", "ampere", "amperes", "amp", "amps"],
             sidict=dict(A=1.0),
+            scale_factor=1.0,
             representative_symbol="A",
             create_metric_prefixes_for=["A"],
             unit_category="Electric current",
@@ -77,6 +81,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["K", "kelvin"],
             sidict=dict(K=1.0),
+            scale_factor=1.0,
             representative_symbol="K",
             create_metric_prefixes_for=["K"],
             unit_category="Thermodynamic temperature",
@@ -87,6 +92,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["cd", "candela", "ca"],
             sidict=dict(cd=1.0),
+            scale_factor=1.0,
             representative_symbol="cd",
             create_metric_prefixes_for=["cd"],
             unit_category="Luminous intensity",
@@ -97,6 +103,7 @@ class UnitNamespace(object):
         self.add_unit(
             symbols=["mol", "mole", "moles"],
             sidict=dict(mol=1.0),
+            scale_factor=1.0,
             representative_symbol="mol",
             create_metric_prefixes_for=["mol"],
             unit_category="Ammount of substance",
@@ -110,6 +117,7 @@ class UnitNamespace(object):
         self,
         symbols,
         sidict,
+        scale_factor,
         representative_symbol,
         create_metric_prefixes_for=[],
         unit_category="",
@@ -125,6 +133,9 @@ class UnitNamespace(object):
 
         sidict : dict
             Dictionary with base SI units as keys and the exponent as value.
+
+        scale_factor : float
+            Scale factor of the quantity.
 
         representative_symbol : string on None (default: None)
             Symbol that should be used to represent the unit in a result of a calculation.
@@ -143,7 +154,7 @@ class UnitNamespace(object):
 
         """
         # First define the quantity based on si
-        quantity = engine.Quantity(1.0)
+        quantity = engine.Quantity(scale_factor)
         quantity.setValDict(sidict)
         # Add to category
         if unit_category is not "":
@@ -226,7 +237,7 @@ class UnitNamespace(object):
             unitdefs = json.load(f)
         for unitdef in unitdefs.values():
             conts = unitdef["used in contexts"]
-            quant = self.quantity_from_string(unitdef["representation in SI"])
+            quant = self.quantity_from_string(unitdef["representation in SI or earlier defined unit"])
             if unitdef["skipped prefixes"]:
                 skipfcn = eval("lambda p: p in {}".format(unitdef["skipped prefixes"]))
             else:
@@ -234,6 +245,7 @@ class UnitNamespace(object):
             self.add_unit(
                 symbols=unitdef["symbols"],
                 sidict=self._get_si_dict(quant),
+                scale_factor=unitdef["scale factor"],
                 representative_symbol=unitdef["representative symbol"],
                 create_metric_prefixes_for=unitdef["metric prefixes for"],
                 unit_category=unitdef["category"],
@@ -369,3 +381,6 @@ if __name__ == "__main__":
     print(m)
     u.quantity_from_string("1 m^-1 s")
     print(5 * mHz)
+    print(5 * N)
+    a=5*V
+    print(a.units())

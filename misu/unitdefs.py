@@ -9,23 +9,6 @@ from misu.misulib import createUnit
 
 # SI derived units (definitions) https://physics.nist.gov/cuu/Units/units.html
 
-createUnit("radian rad", m / m, mustCreateMetricPrefixes=True, unitCategory="Angle")
-createUnit(
-    "steradian sr",
-    m ** 2 / m ** 2,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Solid angle",
-)
-
-createUnit("Hz hertz", 1 / s, mustCreateMetricPrefixes=True, unitCategory="Frequency")
-
-createUnit(
-    "N newton", kg * m / s ** 2, mustCreateMetricPrefixes=True, unitCategory="Force"
-)
-
-createUnit(
-    "Pa pascal", N / m ** 2, mustCreateMetricPrefixes=True, unitCategory="Pressure"
-)
 
 createUnit("J joule", N * m, mustCreateMetricPrefixes=True, unitCategory="Energy")
 

@@ -1,12 +1,83 @@
 {
     "hertz" : {
         "symbols" : ["Hz", "hertz"],
-        "representation in SI" : "s^-1",
+        "representation in SI or earlier defined unit" : "s^-1",
+        "scale factor" : 1.0,
         "representative symbol" : "Hz",
         "metric prefixes for" : ["Hz"],
         "category" : "Frequency",
         "skipped prefixes" : [],
-        "used in contexts" : ["default"]
+        "used in contexts" : ["all"]
+    },
+    "newton" : {
+        "symbols" : ["N", "newton"],
+        "representation in SI or earlier defined unit" : "kg m/s^2",
+        "scale factor" : 1.0,
+        "representative symbol" : "N",
+        "metric prefixes for" : ["N"],
+        "category" : "Force",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "pascal" : {
+        "symbols" : ["Pa", "pascal"],
+        "representation in SI or earlier defined unit" : "N/m^2",
+        "scale factor" : 1.0,
+        "representative symbol" : "Pa",
+        "metric prefixes for" : ["Pa"],
+        "category" : "Pressure",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "joule" : {
+        "symbols" : ["J", "joule"],
+        "representation in SI or earlier defined unit" : "N m",
+        "scale factor" : 1.0,
+        "representative symbol" : "J",
+        "metric prefixes for" : ["J"],
+        "category" : "Force",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "watt" : {
+        "symbols" : ["W", "watt"],
+        "representation in SI or earlier defined unit" : "J/s",
+        "scale factor" : 1.0,
+        "representative symbol" : "W",
+        "metric prefixes for" : ["W"],
+        "category" : "Power",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "coulomb" : {
+        "symbols" : ["C", "coulomb"],
+        "representation in SI or earlier defined unit" : "A s",
+        "scale factor" : 1.0,
+        "representative symbol" : "C",
+        "metric prefixes for" : ["C"],
+        "category" : "Electric charge",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "volt" : {
+        "symbols" : ["V", "volt"],
+        "representation in SI or earlier defined unit" : "W / A",
+        "scale factor" : 1.0,
+        "representative symbol" : "V",
+        "metric prefixes for" : ["V"],
+        "category" : "Voltage",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "volt" : {
+        "symbols" : ["V", "volt"],
+        "representation in SI or earlier defined unit" : "W / A",
+        "scale factor" : 1.0,
+        "representative symbol" : "V",
+        "metric prefixes for" : ["V"],
+        "category" : "Voltage",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
     }
 }
 
