@@ -25,12 +25,12 @@ data='''
 '''
 
 
-SIprefix = collections.namedtuple('SIprefix', 'exponent name symbol')
+siprefix = collections.namedtuple('siprefix', 'exponent name symbol')
 # Cleanup
 clean_data = [tuple(i.strip().split(',')) for i in data.split('\n') if i.strip() !='']
 
 
 # Duplicates of the mappings, keyed by different things
-SIprefixes_exp = {e: SIprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}
-SIprefixes_sym = {sym: SIprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}
-SIprefixes_name = {n: SIprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}
+siprefixes_exp = {e: siprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}
+siprefixes_sym = {sym: siprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}
+siprefixes_name = {n: siprefix(exponent=e, name=n, symbol=sym) for e,n,sym in clean_data}

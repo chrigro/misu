@@ -5,64 +5,85 @@ import traceback
 import math
 import re
 from misu.engine import *
-from misu.SIprefixes import SIprefixes_sym
+from misu.siprefixes import siprefixes_sym
+
+import misu.engine as engine
 
 
 class UnitNamespace(object):
+    def add_unit(
+        self,
+        symbols,
+        quantity,
+        create_metric_prefixes=False,
+        valdict=None,
+        unit_category=None,
+        metric_skip_function=None,
+        notes=None,
+    ):
+        """Add a unit to the namespace.
 
-    def add_unit(self,
-    symbols,
-    quantity,
-    mustCreateMetricPrefixes=False,
-    valdict=None,
-    unitCategory=None,
-    metricSkipFunction=None,
-    notes=None):
-    """Add a unit to the namespace.
+        Parameters
+        ----------
+        symbols : string of space-delimited unit symbols
+            These will be put into the class namespace, and will be entered as keys in
+            the global UnitRegistry.
 
-    symbols: string of space-delimited units.  These will also be eval'ed
-                into the module namespace, and will be entered as keys in
-                UnitRegistry.
+        quantity: Quantity
+            Representation of the unit in a unit defined earlier.
 
-    quantity: would typically be a result of a calculation against
-                base SI or some other unit defined earlier.
+        create_metric_prefixes : bool (default: False)
+            Create derived units using the metric prefixes **for the first symbol only**.
 
-    notes: any important notes about the unit.
-    """
-    if valdict:
-        quantity.setValDict(valdict)
-    first_symbol = symbols.strip().split(" ")[0].strip()
-    if unitCategory:
-        addType(quantity, unitCategory)
-        quantity.setRepresent(as_unit=quantity, symbol=first_symbol)
+        valdict : dict or None (default: None)
+            Dictionary with base SI units as keys and the exponent as value. Only used
+            to defined the SI units. Derive other units from them using the quantity
+            argument.
 
-    for i, symbol in enumerate(symbols.split(" ")):
-        try:
-            symbol = symbol.strip()
-            if symbol == "":
+        unit_category : string (default: None)
+            Category the unit belongs to.
+
+        metric_skip_function : callable
+            Callable that returns true for metric prefixes that should not be created.
+
+        notes : string
+            Any additional notes
+
+        """
+        if valdict is not None:
+            quantity.setValDict(valdict)
+        first_symbol = symbols.strip().split(" ")[0].strip()
+        # Add to category
+        if unit_category:
+            engine.addType(quantity, unit_category)
+            quantity.setRepresent(as_unit=quantity, symbol=first_symbol)
+        # Add to registry and namespace
+        for i, symbol in enumerate(symbols.split(" ")):
+            try:
+                symbol = symbol.strip()
+                if symbol == "":
+                    continue
+                engine.UnitRegistry[symbol] = quantity
+                setattr(self, "{s}".format(s=symbol), quantity)
+            except:
+                print(traceback.format_exc())
+                raise
+        # Metric prefixes for the first symbol
+        if create_metric_prefixes:
+            self._create_metric_prefixes(first_symbol, quantity, metric_skip_function)
+
+    def _create_metric_prefixes(self, symbol, quantity, skipfunction=None):
+        """ Populates the UnitRegistry and the namespace with all the
+        SI-prefixed versions of the given symbol.
+
+        """
+        for prefix in siprefixes_sym:
+            if skipfunction and skipfunction(prefix):
                 continue
-            UnitRegistry[symbol] = quantity
-            exec("global {s}; {s} = quantity".format(s=symbol))
-            print("{s} put in globals".format(s=symbol))
-        except:
-            print(traceback.format_exc())
-
-    # Metric prefixes
-    if mustCreateMetricPrefixes:
-        createMetricPrefixes(first_symbol, metricSkipFunction)
-
-
-
-
-def createMetricPrefixes(symbol, skipfunction=None):
-    """ Populates the namespace with all the SI-prefixed versions of the
-    given symbol.  This uses exec() internally."""
-    for prefix in SIprefixes_sym:
-        if skipfunction and skipfunction(prefix):
-            continue
-        template = "global {p}{s}; {p}{s} = 1e{e} * {s}"
-        subs = template.format(p=prefix, s=symbol, e=SIprefixes_sym[prefix].exponent)
-        exec(subs)
+            prefsymb = "{p}{s}".format(p=prefix, s=symbol)
+            prefquant = 10 ** (float(siprefixes_sym[prefix].exponent)) * quantity
+            setattr(self, prefsymb, prefquant)
+            engine.UnitRegistry[prefsymb] = prefquant
 
 
 # def createUnit(
@@ -194,5 +215,3 @@ def dimensions(**_params_):
 
     # For IDEs, make sure the arg lists propagate through to the user
     return check_types
-
-
