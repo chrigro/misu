@@ -86,7 +86,7 @@ cdef inline Quantity assertQuantity(x):
         return Quantity.__new__(Quantity, x)
 
 
-cdef list symbols = ['m', 'kg', 's', 'A', 'K', 'ca', 'mole']
+cdef list symbols = ['m', 'kg', 's', 'A', 'K', 'cd', 'mol']
 
 
 cdef inline sameunits(Quant self, Quant other):

@@ -1,97 +1,130 @@
 # coding=utf8
 from __future__ import division, print_function
 import sys
-import traceback
 import re
 import json
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
 
-# Population of units data
-# SI root units
 
 class UnitNamespace(object):
     """A namespace for all defined units.
 
     """
 
-    def __init__():
+    def __init__(self, context='all'):
         """Initialize the unit namespace.
 
         We create all SI base units plus the dimensionless unit.
+        See https://physics.nist.gov/cuu/Units/units.html
+
+        Parameters
+        ----------
+        context : string (default: 'all')
+            In which context are we working? Used to restrict the available units.
 
         """
-    dimensionless = Quantity(1.0)
-    addType(dimensionless, "Dimensionless")
+        # dimensionless is special
+        self.dimensionless = engine.Quantity(1.0)
+        engine.addType(self.dimensionless, "Dimensionless")
 
-    createUnit(
-        "m metre metres meter meters",
-        Quantity(1.0),
-        valdict=dict(m=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Length",
-    )
+        # meter
+        self.add_unit(
+            symbols=["m", "metre", "metres", "meter", "meters"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="m",
+            create_metric_prefixes_for=["m"],
+            unit_category="Length",
+            metric_skip_function=None,
+            valdict=dict(m=1.0),
+        )
 
-    createUnit(
-        "g gram grams",
-        Quantity(1.0e-3),
-        valdict=dict(kg=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Mass",
-    )
-    print('g' in globals())
-    g.setRepresent(as_unit=kg, symbol="kg")
+        # kg (special since prefix already included)
+        self.add_unit(
+            symbols=["g", "grams", "gram"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol=None,
+            create_metric_prefixes_for=["g"],
+            unit_category="Mass",
+            metric_skip_function=None,
+            valdict=dict(kg=1.0),
+        )
+        self.g.setRepresent(as_unit=self.kg, symbol="kg")
 
-    createUnit(
-        "s second sec seconds secs",
-        Quantity(1.0),
-        valdict=dict(s=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Time",
-        metricSkipFunction=lambda p: p == "a",
-    )  # makes "as" which is illegal
+        # seconds
+        self.add_unit(
+            symbols=["s", "second", "sec", "seconds", "secs"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="s",
+            create_metric_prefixes_for=["s"],
+            unit_category="Time",
+            metric_skip_function=lambda p: p == "a",  # no "as" since it is a keyword
+            valdict=dict(s=1.0),
+        )
 
-    createUnit(
-        "A ampere amperes amp amps",
-        Quantity(1.0),
-        valdict=dict(A=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Current",
-    )
+        # ampere
+        self.add_unit(
+            symbols=["A", "ampere", "amperes", "amp", "amps"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="A",
+            create_metric_prefixes_for=["A"],
+            unit_category="Electric current",
+            metric_skip_function=None,
+            valdict=dict(A=1.0),
+        )
 
-    createUnit(
-        "K kelvin",
-        Quantity(1.0),
-        valdict=dict(K=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Temperature",
-    )
+        # ampere
+        self.add_unit(
+            symbols=["K", "kelvin"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="K",
+            create_metric_prefixes_for=["K"],
+            unit_category="Thermodynamic temperature",
+            metric_skip_function=None,
+            valdict=dict(K=1.0),
+        )
 
-    createUnit(
-        "ca candela cd",
-        Quantity(1.0),
-        valdict=dict(ca=1.0),
-        mustCreateMetricPrefixes=False,
-        unitCategory="Luminous intensity",
-    )
+        # candela
+        self.add_unit(
+            symbols=["cd", "candela", "ca"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="cd",
+            create_metric_prefixes_for=["cd"],
+            unit_category="Luminous intensity",
+            metric_skip_function=None,
+            valdict=dict(cd=1.0),
+        )
 
-    createUnit(
-        "mol mole moles",
-        Quantity(1.0),
-        valdict=dict(mole=1.0),
-        mustCreateMetricPrefixes=True,
-        unitCategory="Substance",
-    )
-    createMetricPrefixes("mole")
+        # candela
+        self.add_unit(
+            symbols=["cd", "candela", "ca"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="cd",
+            create_metric_prefixes_for=["cd"],
+            unit_category="Luminous intensity",
+            metric_skip_function=None,
+            valdict=dict(cd=1.0),
+        )
 
+        # mol
+        self.add_unit(
+            symbols=["mol", "mole", "moles"],
+            quantity=engine.Quantity(1.0),
+            representative_symbol="mol",
+            create_metric_prefixes_for=["mol"],
+            unit_category="Ammount of substance",
+            metric_skip_function=None,
+            valdict=dict(mol=1.0),
+        )
 
     def add_unit(
         self,
         symbols,
         quantity,
+        representative_symbol,
         create_metric_prefixes_for=[],
-        unit_category='',
+        unit_category="",
         metric_skip_function=None,
         valdict=dict(),
     ):
@@ -103,19 +136,23 @@ class UnitNamespace(object):
             These will be put into the class namespace, and will be entered as keys in
             the global UnitRegistry.
 
-        quantity: Quantity
-            Representation of the unit in a unit defined earlier.
+        quantity : Quantity
+            Representation of the unit in a quantity defined earlier.
+
+        representative_symbol : string on None (default: None)
+            Symbol that should be used to represent the unit in a result of a calculation.
+            Must be in symbols.
 
         create_metric_prefixes_for : list of unit symbols (default: empty list)
-            List of symbols (must also be in symbols) to create derived units with the 
+            List of symbols (must also be in symbols) to create derived units with the
             metric prefixes.
 
         unit_category : string or None (default: None)
-            Category the unit belongs to. Only the first symbol in the list is used.
+            Category the unit belongs to.
 
         metric_skip_function : callable (default: None)
-            Callable that returns true for combinations of symbol names and metric 
-            prefixes for which the prefixed unit should not be created.
+            Callable that returns true for the metric prefixes for which the prefixed
+            unit should not be created.
 
         valdict : dict or None (default: None)
             Dictionary with base SI units as keys and the exponent as value. Only used
@@ -128,21 +165,21 @@ class UnitNamespace(object):
         # Add to category
         if unit_category is not None:
             engine.addType(quantity, unit_category)
-            quantity.setRepresent(as_unit=quantity, symbol=symbols[0].strip())
+        # Representative symbol
+        if representative_symbol is not None:
+            self._check_represent(representative_symbol, symbols)
+            quantity.setRepresent(as_unit=quantity, symbol=representative_symbol)
         # Add to registry and namespace
-        for i, symbol in symbols:
-            try:
-                symbol = symbol.strip()
-                if symbol == "":
-                    continue
-                self._add_to_registry(symbol, quantity)
-                setattr(self, "{s}".format(s=symbol), quantity)
-            except:
-                print(traceback.format_exc())
-                raise
+        for symbol in symbols:
+            symbol = symbol.strip()
+            if symbol == "":
+                continue
+            self._add_to_registry(symbol, quantity)
+            setattr(self, symbol, quantity)
         # Metric prefixes for the first symbol
-        if for symbol in create_metric_prefixes:
-            self.create_metric_prefixes(first_symbol, quantity, metric_skip_function)
+        self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
+        for symbol in create_metric_prefixes_for:
+            self.create_metric_prefixes(symbol, quantity, metric_skip_function)
 
     def create_metric_prefixes(self, symbol, quantity, skipfunction=None):
         """ Populates the UnitRegistry and the namespace with all the
@@ -157,11 +194,30 @@ class UnitNamespace(object):
             setattr(self, prefsymb, prefquant)
             self._add_to_registry(prefsymb, prefquant)
 
+    def _check_metric_prefix_request(self, metricpref_list, symbols):
+        """Check if all the symbols we shall create metric prefixes for are in symbols."""
+        for mp in metricpref_list:
+            if mp not in symbols:
+                raise ValueError(
+                    "Can't create metric prefixed units for {s}. Not in symbols {sym}".format(
+                        s=mp, sym=symbols
+                    )
+                )
+
+    def _check_represent(self, symb, symbols):
+        """Check if the representing symbol symb is valid."""
+        if symb not in symbols:
+            raise ValueError(
+                "Representative symbol {s} not in symbols {sym}".format(
+                    s=symb, sym=symbols
+                )
+            )
+
     def _add_to_registry(self, symbol, quantity):
         """Add symbol representing Quantity to the UnitRegistry.
 
         """
-        if not symbol in engine.UnitRegistry.keys():
+        if symbol not in engine.UnitRegistry.keys():
             engine.UnitRegistry[symbol] = quantity
         else:
             raise ValueError(
@@ -169,132 +225,90 @@ class UnitNamespace(object):
             )
 
 
-# def createUnit(
-#     symbols,
-#     quantity,
-#     mustCreateMetricPrefixes=False,
-#     valdict=None,
-#     unitCategory=None,
-#     metricSkipFunction=None,
-#     notes=None,
-# ):
+# def quantity_from_string(string):
+#     """Create a Quantity instance from the supplied string.
+
+#     The string has to be in the format that misu uses for string representations, i.e.
+#     the following works:
+
+#     1.0 m
+#     1 m
+#     1 m^2 s^-1
+#     1 m/s
+#     1.248e+05 m/s
+#     -1.158e+05 m/s kg
+
 #     """
-#         symbols: string of space-delimited units.  These will also be eval'ed
-#                  into the module namespace, and will be entered as keys in
-#                  UnitRegistry.
+#     # empty string?
+#     if not string.strip() == "":
+#         # Multiplication: replace all whitespace surounded by a-z,A-Z,0-9 with *
+#         string = re.sub(r"([a-z,A-Z,0-9])(\s+)([a-z,A-Z,0-9])", r"\1*\3", string)
 
-#         quantity: would typically be a result of a calculation against
-#                   base SI or some other unit defined earlier.
+#         # Exponentiation: replace all ^ with **
+#         string = re.sub(r"\^", r"**", string)
 
-#         notes: any important notes about the unit.
-#     """
-#     if valdict:
-#         quantity.setValDict(valdict)
-#     first_symbol = symbols.strip().split(" ")[0].strip()
-#     if unitCategory:
-#         addType(quantity, unitCategory)
-#         quantity.setRepresent(as_unit=quantity, symbol=first_symbol)
-
-#     for i, symbol in enumerate(symbols.split(" ")):
+#         res = None
 #         try:
-#             symbol = symbol.strip()
-#             if symbol == "":
-#                 continue
-#             UnitRegistry[symbol] = quantity
-#             exec("global {s}; {s} = quantity".format(s=symbol))
-#             print("{s} put in globals".format(s=symbol))
-#         except:
-#             print(traceback.format_exc())
-
-#     # Metric prefixes
-#     if mustCreateMetricPrefixes:
-#         createMetricPrefixes(first_symbol, metricSkipFunction)
+#             res = eval(string)
+#         except NameError:
+#             print("String {} not understood.".format(string))
+#             res = None
+#         except SyntaxError:
+#             print("String {} not understood.".format(string))
+#             res = None
+#     else:
+#         res = dimensionless
+#     return res
 
 
-def quantity_from_string(string):
-    """Create a Quantity instance from the supplied string.
-
-    The string has to be in the format that misu uses for string representations, i.e.
-    the following works:
-
-    1.0 m
-    1 m
-    1 m^2 s^-1
-    1 m/s
-    1.248e+05 m/s
-    -1.158e+05 m/s kg
-
-    """
-    # empty string?
-    if not string.strip() == "":
-        # Multiplication: replace all whitespace surounded by a-z,A-Z,0-9 with *
-        string = re.sub(r"([a-z,A-Z,0-9])(\s+)([a-z,A-Z,0-9])", r"\1*\3", string)
-
-        # Exponentiation: replace all ^ with **
-        string = re.sub(r"\^", r"**", string)
-
-        res = None
-        try:
-            res = eval(string)
-        except NameError:
-            print("String {} not understood.".format(string))
-            res = None
-        except SyntaxError:
-            print("String {} not understood.".format(string))
-            res = None
-    else:
-        res = dimensionless
-    return res
+# def temperature_value_from_celsius(celsius):
+#     return (celsius - 273.15) * K
 
 
-def temperature_value_from_celsius(celsius):
-    return (celsius - 273.15) * K
+# def temperature_change_from_celsius(celsius):
+#     # SI root units
+#     return celsius * K
 
 
-def temperature_change_from_celsius(celsius):
-    # SI root units
-    return celsius * K
+# def temperature_value_from_fahrenheit(fahrenheit):
+#     return (fahrenheit + 459.67) * R
 
 
-def temperature_value_from_fahrenheit(fahrenheit):
-    return (fahrenheit + 459.67) * R
+# def temperature_change_from_fahrenheit(fahrenheit):
+#     return fahrenheit * R
 
 
-def temperature_change_from_fahrenheit(fahrenheit):
-    return fahrenheit * R
+# # This is a decorator that will ensure arguments match declared units
+# def dimensions(**_params_):
+#     def check_types(_func_, _params_=_params_):
+#         def modified(*args, **kw):
+#             if sys.version_info.major == 2:
+#                 arg_names = _func_.func_code.co_varnames
+#             elif sys.version_info.major == 3:
+#                 arg_names = _func_.__code__.co_varnames
+#             else:
+#                 raise Exception("Invalid Python version!")
+#             kw.update(zip(arg_names, args))
+#             for name, category in _params_.items():
+#                 param = kw[name]
+#                 assert isinstance(
+#                     param, Quantity
+#                 ), """Parameter "{}" must be an instance of class Quantity
+# (and must be of unit type "{}").""".format(
+#                     name, category
+#                 )
+#                 assert (
+#                     param.unitCategory() == category
+#                 ), 'Parameter "{}" must be unit type "{}".'.format(
+#                     name, category
+#                 )
+#             return _func_(**kw)
 
+#         modified.__name__ = _func_.__name__
+#         modified.__doc__ = _func_.__doc__
+#         # Py 3 only
+#         # modified.__annotations__ = _func_.__annotations__
+#         return modified
 
-# This is a decorator that will ensure arguments match declared units
-def dimensions(**_params_):
-    def check_types(_func_, _params_=_params_):
-        def modified(*args, **kw):
-            if sys.version_info.major == 2:
-                arg_names = _func_.func_code.co_varnames
-            elif sys.version_info.major == 3:
-                arg_names = _func_.__code__.co_varnames
-            else:
-                raise Exception("Invalid Python version!")
-            kw.update(zip(arg_names, args))
-            for name, category in _params_.items():
-                param = kw[name]
-                assert isinstance(
-                    param, Quantity
-                ), """Parameter "{}" must be an instance of class Quantity
-(and must be of unit type "{}").""".format(
-                    name, category
-                )
-                assert (
-                    param.unitCategory() == category
-                ), 'Parameter "{}" must be unit type "{}".'.format(
-                    name, category
-                )
-            return _func_(**kw)
-
-        modified.__name__ = _func_.__name__
-        modified.__doc__ = _func_.__doc__
-        # Py 3 only
-        # modified.__annotations__ = _func_.__annotations__
-        return modified
-
-    # For IDEs, make sure the arg lists propagate through to the user
-    return check_types
+#     # For IDEs, make sure the arg lists propagate through to the user
+#     return check_types

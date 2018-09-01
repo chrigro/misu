@@ -1,4 +1,3 @@
-from misu.misulib import *
-from misu.unitdefs import *
+from misu.misulib import UnitNamespace
 
 import misu.physicalconstants as pc
