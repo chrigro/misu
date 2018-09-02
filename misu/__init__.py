@@ -1,6 +1,14 @@
 # the core
 from misu.misulib import UnitNamespace, units_to_this_ns
 
+# core from the engine
+from misu.engine import (
+    Quantity,
+    QuantityNP,
+    EIncompatibleUnits,
+    ESignatureAlreadyRegistered,
+)
+
 # the conversion helpers
 from misu.misulib import (
     k_val_from_c,
@@ -14,4 +22,5 @@ from misu.misulib import (
 # the wrappers
 from misu.misulib import noquantity, calc_unitless, dimensions
 
-# import misu.physicalconstants as pc
+# the constants
+from misu.physicalconstants import PhysConst
