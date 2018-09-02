@@ -365,8 +365,17 @@ def noquantity(func):
     return wrapper
 
 
-# This is a decorator that will ensure arguments match declared units
+# This is a decorator that will ensure arguments match declared unit category
 def dimensions(**_params_):
+    """Decorator to assure the parameters given have the correct unit category.
+
+    Usage example:
+
+        @dimensions(a='Length', b='Time')
+        def example(a, b):
+            # do something
+
+    """
     def check_types(_func_, _params_=_params_):
         def modified(*args, **kw):
             if sys.version_info.major == 2:
@@ -446,3 +455,9 @@ if __name__ == "__main__":
     a = 5 * kg
     print(a + 3 * g >> mg)
     k_val_from_c(5)
+
+    @dimensions(a='Length')
+    def test(a):
+        return a
+
+    test(5*s)
