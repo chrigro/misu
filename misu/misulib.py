@@ -18,7 +18,7 @@ class UnitNamespace(object):
 
     """
 
-    def __init__(self, context="default"):
+    def __init__(self, context="si"):
         """Initialize the unit namespace.
 
         We create all SI base units plus the dimensionless unit.
@@ -26,8 +26,9 @@ class UnitNamespace(object):
 
         Parameters
         ----------
-        context : string (default: 'all')
+        context : string (default: 'si')
             In which context are we working? Used to restrict the available units.
+            The value 'all' loads all quantities.
 
         """
         # dimensionless is special
@@ -252,7 +253,7 @@ class UnitNamespace(object):
             unitdefs = json.load(f, object_pairs_hook=OrderedDict)
         for unitdef in unitdefs.values():
             conts = unitdef["used in contexts"]
-            if ("all" in conts) or (context in conts):
+            if ("all" in conts) or (context in conts) or (context == 'all'):
                 quant = self.quantity_from_string(
                     unitdef["representation in SI or earlier defined unit"]
                 )
@@ -544,7 +545,7 @@ def f_val_from_c(celsius):
 
 
 if __name__ == "__main__":
-    u = UnitNamespace("temperature")
+    u = UnitNamespace("all")
     units_to_this_ns(u)
     print(m)
     u.quantity_from_string("1 m^-1 s")

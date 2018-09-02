@@ -220,12 +220,184 @@
         "used in contexts" : ["extended", "time"]
     },
     "year_tropical" : {
-        "symbols" : ["year_sidereal"],
+        "symbols" : ["year_tropical"],
         "representation in SI or earlier defined unit" : "s",
         "scale factor" : 31556925,
         "used in contexts" : ["extended", "time"]
-    }
+    },
+    "atomic_unit_of_time" : {
+        "symbols" : ["au", "atomic_unit_of_time"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 2.418884254e-17,
+        "used in contexts" : ["extended", "time"]
+    },
+    "Callippic_cycle" : {
+        "symbols" : ["Callippic_cycle"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 2.3983776e9,
+        "used in contexts" : ["extended", "time"]
+      },
+      "century" : {
+          "symbols" : ["century", "centuries"],
+          "representation in SI or earlier defined unit" : "years",
+          "scale factor" : 100,
+          "used in contexts" : ["extended", "time"]
+      },
+      "day" : {
+          "symbols" : ["d", "day", "days"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 86400,
+          "used in contexts" : ["extended", "time"]
+      },
+      "day_sidereal" : {
+          "symbols" : ["day_sidereal"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 86164.1,
+          "used in contexts" : ["extended", "time"]
+      },
+      "decade" : {
+          "symbols" : ["dec", "decade", "decades"],
+          "representation in SI or earlier defined unit" : "years",
+          "scale factor" : 10,
+          "used in contexts" : ["extended", "time"]
+      },
+      "fortnight" : {
+          "symbols" : ["fn", "fortnight", "fortnights"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 1209600,
+          "used in contexts" : ["extended", "time"]
+      },
+      "helek" : {
+          "symbols" : ["helek"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 3.3,
+          "used in contexts" : ["extended", "time"]
+      },
+      "Hipparchic_cycle" : {
+          "symbols" : ["Hipparchic_cycle"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 9.593424e9,
+          "used in contexts" : ["extended", "time"]
+      },
+      "hour" : {
+          "symbols" : ["hr", "hour", "hrs", "hours"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 3600,
+          "used in contexts" : ["extended", "time"]
+      },
+      "jiffy" : {
+          "symbols" : ["j", "jiffy"],
+          "representation in SI or earlier defined unit" : "ms",
+          "scale factor" : 16,
+          "used in contexts" : ["extended", "time"]
+      },
+      "jiffy_alternate" : {
+          "symbols" : ["ja", "jiffy_alternate"],
+          "representation in SI or earlier defined unit" : "ms",
+          "scale factor" : 10,
+          "used in contexts" : ["extended", "time"]
+      },
+      "ke_quarter_of_an_hour" : {
+          "symbols" : ["ke_quarter_of_an_hour"],
+          "representation in SI or earlier defined unit" : "minutes",
+          "scale factor" : 15,
+          "used in contexts" : ["extended", "time"]
+      },
+      "ke_traditional" : {
+          "symbols" : ["ke_traditional"],
+          "representation in SI or earlier defined unit" : "minutes",
+          "scale factor" : 14.4,
+          "used in contexts" : ["extended", "time"]
+      },
+      "lustre" : {
+          "symbols" : ["lustre", "lustrum"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 1.5768e8,
+          "used in contexts" : ["extended", "time"]
+      },
+      "Metonic_cycle" : {
+          "symbols" : ["Metonic_cycle", "enneadecaeteris"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 5.99616e8,
+          "used in contexts" : ["extended", "time"]
+      },
+      "millennium" : {
+          "symbols" : ["millennium"],
+          "representation in SI or earlier defined unit" : "years",
+          "scale factor" : 1000,
+          "used in contexts" : ["extended", "time"]
+      },
+      "moment" : {
+          "symbols" : ["moment"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 90,
+          "used in contexts" : ["extended", "time"]
+      },
+      "month_full" : {
+          "symbols" : ["month_full"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 2592000,
+          "used in contexts" : ["extended", "time"]
+      },
+      "month_Greg_avg" : {
+          "symbols" : ["month_Greg_avg"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 2.6297e6,
+          "used in contexts" : ["extended", "time"]
+      },
+      "month_hollow" : {
+          "symbols" : ["month_hollow"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 2505600,
+          "used in contexts" : ["extended", "time"]
+      },
+      "month_synodic" : {
+          "symbols" : ["month_synodic"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 2.551e6,
+          "used in contexts" : ["extended", "time"]
+      },
+      "octaeteris" : {
+          "symbols" : ["octaeteris"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 2.524608e8,
+          "used in contexts" : ["extended", "time"]
+      },
+      "Planck_time" : {
+          "symbols" : ["Planck_time"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 1.351211868e-43,
+          "used in contexts" : ["extended", "time"]
+      },
+      "shake" : {
+          "symbols" : ["shake", "shakes"],
+          "representation in SI or earlier defined unit" : "ns",
+          "scale factor" : 10,
+          "used in contexts" : ["extended", "time"]
+      },
+      "sigma" : {
+          "symbols" : ["sigma"],
+          "representation in SI or earlier defined unit" : "us",
+          "scale factor" : 1,
+          "used in contexts" : ["extended", "time"]
+      },
+      "Sothic_cycle" : {
+          "symbols" : ["Sothic_cycle"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 4.6074096e10,
+          "used in contexts" : ["extended", "time"]
+      },
+      "svedberg" : {
+          "symbols" : ["svedberg"],
+          "representation in SI or earlier defined unit" : "fs",
+          "scale factor" : 100,
+          "used in contexts" : ["extended", "time"]
+      },
+      "week" : {
+          "symbols" : ["wk", "wks", "week", "weeks"],
+          "representation in SI or earlier defined unit" : "s",
+          "scale factor" : 604800,
+          "used in contexts" : ["extended", "time"]
+      }
+
 }
-
-
-

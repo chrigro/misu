@@ -2,35 +2,6 @@
 
 ############ Big list of definitions #################################################
 
-'au atomic_unit_of_time', 2.418884254e-17 * s)
-'Callippic_cycle ', 2.3983776e9 * s)
-'century centuries', 100 * years)
-'d day days', 86400 * s)
-'day_sidereal', 86164.1 * s)
-'dec decade decades', 10 * years)
-'fn fortnight fortnights', 1209600 * s)
-'helek', 3.3 * s)
-'Hipparchic_cycle', 9.593424e9 * s)
-'hr hour hrs hours', 3600 * s)
-'j jiffy', .016 * s)
-'ja jiffy_alternate', 10 * ms)
-'ke_quarter_of_an_hour ', 15 * minutes)
-'ke_traditional ', 14.4 * minutes)
-'lustre  lustrum ', 1.5768e8 * s)
-'Metonic_cycle  enneadecaeteris ', 5.99616e8 * s)
-'millennium ', 1000 * years)
-'moment ', 90 * s)
-'month_full', 2592000 * s)
-'month_Greg_avg', 2.6297e6 * s)
-'month_hollow', 2505600 * s)
-'month_synodic', 2.551e6 * s)
-'octaeteris', 2.524608e8 * s)
-'Planck_time', 1.351211868e-43 * s)
-'shake shakes', 10 * ns)
-'sigma ', 1 * us)
-'Sothic_cycle ', 4.6074096e10 * s)
-'svedberg  S ', 100 * fs)
-'wk wks week weeks', 604800 * s)
 
 
 
