@@ -404,7 +404,6 @@
           "representation in SI or earlier defined unit" : "m^2",
           "scale factor" : 1,
           "category" : "Area",
-          "representative symbol" : "m2",
           "used in contexts" : ["extended", "area"]
       },
       "acre_international" : {
@@ -616,5 +615,594 @@
           "representation in SI or earlier defined unit" : "m2",
           "scale factor" : 1.2e5,
           "used in contexts" : ["extended", "area"]
+      },
+      "cubic_metre" : {
+          "symbols" : ["m3", "cubic_metre"],
+          "representation in SI or earlier defined unit" : "m^3",
+          "scale factor" : 1,
+          "category" : "Volume",
+          "used in contexts" : ["extended", "volume"]
+      },
+      "acre_foot" : {
+          "symbols" : ["ac_ft", "acre_foot"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1233.48183754752,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "acre_inch" : {
+          "symbols" : ["acre_inch"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 102.79015312896,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "barrel_imperial" : {
+          "symbols" : ["barrel_imperial", "bl_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.16365924,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "barrel_petroleum" : {
+          "symbols" : ["bbl", "barrel_petroleum", "bl"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.158987294928,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "barrel_US_dry" : {
+          "symbols" : ["barrel_US_dry", "bl_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.115628198985075,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "barrel_US_fluid" : {
+          "symbols" : ["barrel_US_fluid", "fl_bl_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.119240471196,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "board_foot" : {
+          "symbols" : ["board_foot", "fbm"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 2.359737216e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "bucket_imperial" : {
+          "symbols" : ["bucket_imperial", "bkt"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.01818436,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "bushel_imperial" : {
+          "symbols" : ["bushel_imperial", "bu_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.03636872,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "bushel_US_dry_heaped" : {
+          "symbols" : ["bushel_US_dry_heaped", "bu_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.0440488377086,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "bushel_US_dry_level" : {
+          "symbols" : ["bushel_US_dry_level", "bu_US_lvl"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.03523907016688,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "butt_pipe" : {
+          "symbols" : ["butt_pipe"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.476961884784,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "coomb" : {
+          "symbols" : ["coomb"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.14547488,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cord_firewood" : {
+          "symbols" : ["cord_firewood"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 3.624556363776,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cord_foot" : {
+          "symbols" : ["cord_foot"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.453069545472,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cubic_fathom" : {
+          "symbols" : ["cubic_fathom", "cu_fm"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 6.116438863872,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cubic_foot" : {
+          "symbols" : ["cubic_foot", "cu_ft", "cubic_feet"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.028316846592,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cubic_inch" : {
+          "symbols" : ["cubic_inch", "cu_in", "cubic_inches"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 16.387064e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cubic_mile" : {
+          "symbols" : ["cubic_mile", "cu_mi"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4168181825.440579584,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cubic_yard" : {
+          "symbols" : ["cubic_yard", "cubic_yards", "cu_yd"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.764554857984,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cup_breakfast" : {
+          "symbols" : ["cup_breakfast"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 284.130625e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cup_Canadian" : {
+          "symbols" : ["cup_Canadian", "c_CA"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 227.3045e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cup_metric" : {
+          "symbols" : ["cup_metric"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 250.0e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cup_US_customary" : {
+          "symbols" : ["cup_US_customary", "c_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 236.5882365e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "cup_US_food_nutrition_labeling" : {
+          "symbols" : ["cup_US_food_nutrition_labeling"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 2.4e-4,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "dash_imperial" : {
+          "symbols" : ["dash_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 369.961751302083e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "dash_US" : {
+          "symbols" : ["dash_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 308.057599609375e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "dessertspoon_imperial" : {
+          "symbols" : ["dessertspoon_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 11.8387760416e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_imperial" : {
+          "symbols" : ["drop_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 98.6564670138e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_imperial_alt" : {
+          "symbols" : ["drop_imperial_alt"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 77.886684e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_medical" : {
+          "symbols" : ["drop_medical"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 83.03e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_medical" : {
+          "symbols" : ["drop_medical"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 83.3e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_metric" : {
+          "symbols" : ["drop_metric"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 50.0e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_US" : {
+          "symbols" : ["drop_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 82.14869322916e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "drop_US_alt" : {
+          "symbols" : ["drop_US_alt"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 51.34293326823e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "fifth" : {
+          "symbols" : ["fifth"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 757.0823568e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "firkin" : {
+          "symbols" : ["firkin"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.034068706056,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "fluid_drachm_imperial" : {
+          "symbols" : ["fluid_drachm_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 3.5516328125e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "fluid_dram_US" : {
+          "symbols" : ["fluid_dram_US", " US_fluidram"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 3.6966911953125e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "fluid_scruple_imperial" : {
+          "symbols" : ["fluid_scruple_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.18387760416e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gallon_beer" : {
+          "symbols" : ["gallon_beer", " beer_gal"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4.621152048e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gallon_imperial" : {
+          "symbols" : ["gal_imp", "gallon_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4.54609e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gallon_US_dry" : {
+          "symbols" : ["gal_US", "gallon_US_dry"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4.40488377086e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gallon_US_fluid_Wine" : {
+          "symbols" : ["gallon_US_fluid_Wine"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 3.785411784e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gill_imperial" : {
+          "symbols" : ["gill_imperial", "Noggin", "gi_imp", "nog"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 142.0653125e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "gill_US" : {
+          "symbols" : ["gill_US", "gi_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 118.29411825e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "hogshead_imperial" : {
+          "symbols" : ["hogshead_imperial", "hhd_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.32731848,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "hogshead_US" : {
+          "symbols" : ["hogshead_US", "hhd_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.238480942392,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "jigger_bartending" : {
+          "symbols" : ["jigger_bartending"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 44.36e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "kilderkin" : {
+          "symbols" : ["kilderkin"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.08182962,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "lambda_unit" : {
+          "symbols" : ["lambda_unit"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "last" : {
+          "symbols" : ["last"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 2.9094976,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "litre" : {
+          "symbols" : ["litre", "l", "litres", "liter"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.001,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "load" : {
+          "symbols" : ["load"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.4158423296,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "minim_imperial" : {
+          "symbols" : ["minim_imperial", "minim"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 59.1938802083e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "minim_US" : {
+          "symbols" : ["minim_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 61.611519921875e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ounce_fluid_imperial" : {
+          "symbols" : ["ounce_fluid_imperial", "fl_oz_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 28.4130625e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ounce_fluid_US_customary" : {
+          "symbols" : ["ounce_fluid_US_customary", "US_fl_oz"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 29.5735295625e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ounce_fluid_US_food_nutrition_labeling" : {
+          "symbols" : ["ounce_fluid_US_food_nutrition_labeling"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 3e-5,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "peck_imperial" : {
+          "symbols" : ["peck_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 9.09218e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "peck_US_dry" : {
+          "symbols" : ["peck_US_dry"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 8.80976754172e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "perch" : {
+          "symbols" : ["perch", "per"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.700841953152,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pinch_imperial" : {
+          "symbols" : ["pinch_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 739.92350260416e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pinch_US" : {
+          "symbols" : ["pinch_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 616.11519921875e-9,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pint_imperial" : {
+          "symbols" : ["pint_imperial", "pt_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 568.26125e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pint_US_dry" : {
+          "symbols" : ["pint_US_dry", "pt_US_dry"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 550.6104713575e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pint_US_fluid" : {
+          "symbols" : ["pint_US_fluid", "pt_US_fl"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 473.176473e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pony" : {
+          "symbols" : ["pony"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 22.180147171875e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "pottle" : {
+          "symbols" : ["pottle", "quartern"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 2.273045e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "quart_imperial" : {
+          "symbols" : ["quart_imperial", "qt_imp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.1365225e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "quart_US_dry" : {
+          "symbols" : ["quart_US_dry"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.101220942715e-3,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "quart_US_fluid" : {
+          "symbols" : ["quart_US_fluid"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 946.352946e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "quarter_pail" : {
+          "symbols" : ["quarter_pail"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.29094976,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "register_ton" : {
+          "symbols" : ["register_ton"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 2.8316846592,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "sack_imperial" : {
+          "symbols" : ["sack_imperial", "bag"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.10910616,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "sack_US" : {
+          "symbols" : ["sack_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.10571721050064,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "seam" : {
+          "symbols" : ["seam"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.28191256133504,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "shot" : {
+          "symbols" : ["shot"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 29.57e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "strike_imperial" : {
+          "symbols" : ["strike_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.07273744,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "strike_US" : {
+          "symbols" : ["strike_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.07047814033376,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_Australian_metric" : {
+          "symbols" : ["tablespoon_Australian_metric"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 20.0e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_Canadian" : {
+          "symbols" : ["tablespoon_Canadian"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 14.20653125e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_imperial" : {
+          "symbols" : ["tablespoon_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 17.7581640625e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_metric" : {
+          "symbols" : ["tablespoon_metric"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 15.0e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_US_customary" : {
+          "symbols" : ["tablespoon_US_customary"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 14.7867647825e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tablespoon_US_food_nutrition_labeling" : {
+          "symbols" : ["tablespoon_US_food_nutrition_labeling", "tbsp"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.5e-5,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "teaspoon_Canadian" : {
+          "symbols" : ["teaspoon_Canadian"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4.735510416e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "teaspoon_imperial" : {
+          "symbols" : ["teaspoon_imperial"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 5.91938802083e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "teaspoon_metric" : {
+          "symbols" : ["teaspoon_metric"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 5.0e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "teaspoon_US_customary" : {
+          "symbols" : ["teaspoon_US_customary"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 4.928921595e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "teaspoon_US_food_nutrition_labeling" : {
+          "symbols" : ["teaspoon_US_food_nutrition_labeling"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 5e-6,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "timber_foot" : {
+          "symbols" : ["timber_foot"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.028316846592,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ton_displacement" : {
+          "symbols" : ["ton_displacement"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.99108963072,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ton_freight" : {
+          "symbols" : ["ton_freight"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.13267386368,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "ton_water" : {
+          "symbols" : ["ton_water"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.01832416,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "tun" : {
+          "symbols" : ["tun"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 0.953923769568,
+          "used in contexts" : ["extended", "volume"]
+      },
+      "wey_US" : {
+          "symbols" : ["wey_US"],
+          "representation in SI or earlier defined unit" : "m3",
+          "scale factor" : 1.4095628066752,
+          "used in contexts" : ["extended", "volume"]
       }
 }
