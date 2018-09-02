@@ -1,5 +1,6 @@
 # coding=utf8
 from __future__ import division, print_function
+from collections import OrderedDict  # OrderedDict: from py 2.7 on
 import sys
 import re
 import json
@@ -159,7 +160,7 @@ class UnitNamespace(object):
         # Add to category
         if unit_category is not "":
             # print("Adding type {} to category {}".format(quantity.units(), unit_category))
-            engine.addType(quantity, unit_category)
+            engine.addType(quantity, str(unit_category))
         # Representative symbol
         if representative_symbol is not None:
             self._check_represent(representative_symbol, symbols)
@@ -234,7 +235,7 @@ class UnitNamespace(object):
         """
         datapath = osp.join(osp.dirname(__file__), "unitdefs.json")
         with open(datapath) as f:
-            unitdefs = json.load(f)
+            unitdefs = json.load(f, object_pairs_hook=OrderedDict)
         for unitdef in unitdefs.values():
             conts = unitdef["used in contexts"]
             quant = self.quantity_from_string(unitdef["representation in SI or earlier defined unit"])
@@ -381,6 +382,6 @@ if __name__ == "__main__":
     print(m)
     u.quantity_from_string("1 m^-1 s")
     print(5 * mHz)
-    print(5 * N)
-    a=5*V
-    print(a.units())
+    print(5 * kg)
+    a=5*kg
+    print(a+3*g >> mg)
