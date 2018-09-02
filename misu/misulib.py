@@ -248,22 +248,23 @@ class UnitNamespace(object):
             unitdefs = json.load(f, object_pairs_hook=OrderedDict)
         for unitdef in unitdefs.values():
             conts = unitdef["used in contexts"]
-            quant = self.quantity_from_string(
-                unitdef["representation in SI or earlier defined unit"]
-            )
-            if unitdef["skipped prefixes"]:
-                skipfcn = eval("lambda p: p in {}".format(unitdef["skipped prefixes"]))
-            else:
-                skipfcn = None
-            self.add_unit(
-                symbols=unitdef["symbols"],
-                sidict=self._get_si_dict(quant),
-                scale_factor=unitdef["scale factor"],
-                representative_symbol=unitdef["representative symbol"],
-                create_metric_prefixes_for=unitdef["metric prefixes for"],
-                unit_category=unitdef["category"],
-                metric_skip_function=skipfcn,
-            )
+            if ("all" in conts) or (context in conts):
+                quant = self.quantity_from_string(
+                    unitdef["representation in SI or earlier defined unit"]
+                )
+                if unitdef["skipped prefixes"]:
+                    skipfcn = eval("lambda p: p in {}".format(unitdef["skipped prefixes"]))
+                else:
+                    skipfcn = None
+                self.add_unit(
+                    symbols=unitdef["symbols"],
+                    sidict=self._get_si_dict(quant),
+                    scale_factor=unitdef["scale factor"],
+                    representative_symbol=unitdef["representative symbol"],
+                    create_metric_prefixes_for=unitdef["metric prefixes for"],
+                    unit_category=unitdef["category"],
+                    metric_skip_function=skipfcn,
+                )
 
     def _get_si_dict(self, quant):
         """Get the si dictionary for quant."""
@@ -530,7 +531,7 @@ def f_val_from_c(celsius):
 
 
 if __name__ == "__main__":
-    u = UnitNamespace()
+    u = UnitNamespace("physics_amo")
     units_to_this_ns(u)
     print(m)
     u.quantity_from_string("1 m^-1 s")
