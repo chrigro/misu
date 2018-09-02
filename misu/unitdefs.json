@@ -193,24 +193,39 @@
         "symbols" : ["R", "rankine"],
         "representation in SI or earlier defined unit" : "K",
         "scale factor" : 0.555555555555,
-        "category" : "",
-        "representative symbol" : "",
-        "metric prefixes for" : [],
-        "skipped prefixes" : [],
-        "used in contexts" : ["exotic"]
+        "used in contexts" : ["temperature"]
     },
     "minute" : {
         "symbols" : ["minute", "mins", "minutes"],
         "representation in SI or earlier defined unit" : "s",
         "scale factor" : 60,
-        "category" : "",
-        "representative symbol" : "",
-        "metric prefixes for" : [],
-        "skipped prefixes" : [],
-        "used in contexts" : ["extended"]
+        "used in contexts" : ["extended", "time"]
+    },
+    "year" : {
+        "symbols" : ["yr", "year", "years", "year_Gregorian"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 31556952,
+        "used in contexts" : ["extended", "time"]
+    },
+    "year_Julian" : {
+        "symbols" : ["year_Julian"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 31557600,
+        "used in contexts" : ["extended", "time"]
+    },
+    "year_sidereal" : {
+        "symbols" : ["year_sidereal"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 31558149.7632,
+        "used in contexts" : ["extended", "time"]
+    },
+    "year_tropical" : {
+        "symbols" : ["year_sidereal"],
+        "representation in SI or earlier defined unit" : "s",
+        "scale factor" : 31556925,
+        "used in contexts" : ["extended", "time"]
     }
 }
-
 
 
 

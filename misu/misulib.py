@@ -121,8 +121,8 @@ class UnitNamespace(object):
         symbols,
         sidict,
         scale_factor,
-        unit_category = "",
-        representative_symbol = "",
+        unit_category="",
+        representative_symbol="",
         create_metric_prefixes_for=[],
         metric_skip_function=None,
     ):
@@ -256,17 +256,34 @@ class UnitNamespace(object):
                 quant = self.quantity_from_string(
                     unitdef["representation in SI or earlier defined unit"]
                 )
-                if unitdef["skipped prefixes"]:
-                    skipfcn = eval("lambda p: p in {}".format(unitdef["skipped prefixes"]))
+                # optional stuff
+                if "category" in unitdef.keys():
+                    cat = unitdef["category"]
                 else:
-                    skipfcn = None
+                    cat = ""
+                if "representative symbol" in unitdef.keys():
+                    rep_sym = unitdef["representative symbol"]
+                else:
+                    rep_sym = ""
+                if "metric prefixes for" in unitdef.keys():
+                    prefixes = unitdef["metric prefixes for"]
+                else:
+                    prefixes = []
+                if "skipped prefixes" in unitdef.keys():
+                    if unitdef["skipped prefixes"]:
+                        skipfcn = eval(
+                            "lambda p: p in {}".format(unitdef["skipped prefixes"])
+                        )
+                    else:
+                        skipfcn = None
+                # add the unit
                 self.add_unit(
                     symbols=unitdef["symbols"],
                     sidict=self._get_si_dict(quant),
                     scale_factor=unitdef["scale factor"],
-                    unit_category=unitdef["category"],
-                    representative_symbol=unitdef["representative symbol"],
-                    create_metric_prefixes_for=unitdef["metric prefixes for"],
+                    unit_category=cat,
+                    representative_symbol=rep_sym,
+                    create_metric_prefixes_for=prefixes,
                     metric_skip_function=skipfcn,
                 )
 
@@ -345,14 +362,6 @@ def units_to_this_ns(unit_namespace):
 
 
 # ----- decorators -----
-
-# def my_decorator(func):
-#     @functools.wraps(func)
-#     def wrapper(*args, **kwargs):
-#         # call the wrapped function
-#         res = func(*args, **kwargs)
-#         return res
-#     return wrapper
 
 
 def noquantity(func):
@@ -535,7 +544,7 @@ def f_val_from_c(celsius):
 
 
 if __name__ == "__main__":
-    u = UnitNamespace("exotic")
+    u = UnitNamespace("temperature")
     units_to_this_ns(u)
     print(m)
     u.quantity_from_string("1 m^-1 s")
@@ -546,10 +555,10 @@ if __name__ == "__main__":
 
     tt = 4 * R
     print(tt)
-    tt.setRepresent(R, 'R')
-    print(4*R)
-    tt.setRepresent(K, 'K')
-    print(4*R)
+    tt.setRepresent(R, "R")
+    print(4 * R)
+    tt.setRepresent(K, "K")
+    print(4 * R)
 
     k_val_from_c(5)
 
