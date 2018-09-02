@@ -188,6 +188,16 @@
         "category" : "Catalytic activity",
         "skipped prefixes" : [],
         "used in contexts" : ["all", "si"]
+    },
+    "rankine" : {
+        "symbols" : ["R", "rankine"],
+        "representation in SI or earlier defined unit" : "K",
+        "scale factor" : 0.555555555555,
+        "representative symbol" : "",
+        "metric prefixes for" : [],
+        "category" : "",
+        "skipped prefixes" : [],
+        "used in contexts" : ["extended"]
     }
 }
 

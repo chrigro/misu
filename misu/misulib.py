@@ -87,7 +87,7 @@ class UnitNamespace(object):
             scale_factor=1.0,
             representative_symbol="K",
             create_metric_prefixes_for=["K"],
-            unit_category="Thermodynamic temperature",
+            unit_category="Temperature",
             metric_skip_function=None,
         )
 
@@ -149,7 +149,9 @@ class UnitNamespace(object):
             metric prefixes.
 
         unit_category : string or None (default: None)
-            Category the unit belongs to.
+            Category the unit belongs to. This should be specified for the first unit per
+            unique composition in SI units only. Otherwise a ESignatureAlreadyRegistered
+            is triggered, which is caugth and translated into a warning.
 
         metric_skip_function : callable (default: None)
             Callable that returns true for the metric prefixes for which the prefixed
@@ -166,11 +168,10 @@ class UnitNamespace(object):
                 engine.addType(quantity, str(unit_category))
             except ESignatureAlreadyRegistered as e:
                 print(
-                    "ERROR while resistering {} for unit category {}".format(
-                        symbols[0], unit_category
+                    "WARNING: Can not resister {} for unit category {}: {}".format(
+                        symbols[0], unit_category, e
                     )
                 )
-                raise e
         # Representative symbol
         if not representative_symbol == "":
             self._check_represent(representative_symbol, symbols)
@@ -183,9 +184,10 @@ class UnitNamespace(object):
             self._add_quant_attr(symbol, quantity)
             self._add_to_registry(symbol, quantity)
         # Metric prefixes for the first symbol
-        self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
-        for symbol in create_metric_prefixes_for:
-            self.create_metric_prefixes(symbol, quantity, metric_skip_function)
+        if not create_metric_prefixes_for == []:
+            self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
+            for symbol in create_metric_prefixes_for:
+                self.create_metric_prefixes(symbol, quantity, metric_skip_function)
 
     def create_metric_prefixes(self, symbol, quantity, skipfunction=None):
         """ Populates the UnitRegistry and the namespace with all the
@@ -531,7 +533,7 @@ def f_val_from_c(celsius):
 
 
 if __name__ == "__main__":
-    u = UnitNamespace("physics_amo")
+    u = UnitNamespace("extended")
     units_to_this_ns(u)
     print(m)
     u.quantity_from_string("1 m^-1 s")
@@ -539,6 +541,14 @@ if __name__ == "__main__":
     print(5 * kg)
     a = 5 * kg
     print(a + 3 * g >> mg)
+
+    tt = 4 * R
+    print(tt)
+    tt.setRepresent(R, 'R')
+    print(4*R)
+    tt.setRepresent(K, 'K')
+    print(4*R)
+
     k_val_from_c(5)
 
     @dimensions(a="Length")
