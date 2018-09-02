@@ -10,63 +10,6 @@ from misu.misulib import createUnit
 # SI derived units (definitions) https://physics.nist.gov/cuu/Units/units.html
 
 
-createUnit("J joule", N * m, mustCreateMetricPrefixes=True, unitCategory="Energy")
-
-createUnit("W watt", J / s, mustCreateMetricPrefixes=True, unitCategory="Power")
-createUnit("C coulomb", s * A, mustCreateMetricPrefixes=True, unitCategory="Charge")
-createUnit("V volt", W / A, mustCreateMetricPrefixes=True, unitCategory="Voltage")
-createUnit("F farad", C / V, mustCreateMetricPrefixes=True, unitCategory="Capacitance")
-
-createUnit("ohm", V / A, mustCreateMetricPrefixes=True, unitCategory="Resistance")
-createUnit(
-    "S siemens", 1 / ohm, mustCreateMetricPrefixes=False, unitCategory="Conductance"
-)
-createUnit(
-    "Wb weber", J / A, mustCreateMetricPrefixes=True, unitCategory="Magnetic flux"
-)
-createUnit(
-    "T tesla",
-    N / A / m,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Magnetic field strength",
-)
-
-createUnit(
-    "H henry",
-    V * s / A,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Magnetic field strength",
-)
-createUnit(
-    "lumen lm", cd * J, mustCreateMetricPrefixes=True, unitCategory="Luminous flux"
-)
-createUnit(
-    "lux lx", lm / m ** 2, mustCreateMetricPrefixes=True, unitCategory="Luminous flux"
-)
-createUnit(
-    "becquerel Bq",
-    1 / s,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Radioactive activity",
-)
-createUnit(
-    "kerma gray Gy",
-    J / kg,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Absorbed radioactive dose",
-)
-createUnit(
-    "sievert Sv",
-    J / kg,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Radioactive dose equivalent",
-)
-createUnit(
-    "katal kat",
-    mol / s,
-    mustCreateMetricPrefixes=True,
-    unitCategory="Catalytic activity",
-)
 
 
 

@@ -9,6 +9,7 @@ import os.path as osp
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
+from misu.engine import ESignatureAlreadyRegistered
 
 
 class UnitNamespace(object):
@@ -49,7 +50,7 @@ class UnitNamespace(object):
             symbols=["g", "grams", "gram"],
             sidict=dict(kg=1.0),
             scale_factor=1.0,
-            representative_symbol=None,
+            representative_symbol="",
             create_metric_prefixes_for=["g"],
             unit_category="Mass",
             metric_skip_function=None,
@@ -160,9 +161,17 @@ class UnitNamespace(object):
         # Add to category
         if unit_category is not "":
             # print("Adding type {} to category {}".format(quantity.units(), unit_category))
-            engine.addType(quantity, str(unit_category))
+            try:
+                engine.addType(quantity, str(unit_category))
+            except ESignatureAlreadyRegistered as e:
+                print(
+                    "ERROR while resistering {} for unit category {}".format(
+                        symbols[0], unit_category
+                    )
+                )
+                raise e
         # Representative symbol
-        if representative_symbol is not None:
+        if not representative_symbol == "":
             self._check_represent(representative_symbol, symbols)
             quantity.setRepresent(as_unit=quantity, symbol=representative_symbol)
         # Add to registry and namespace
@@ -238,7 +247,9 @@ class UnitNamespace(object):
             unitdefs = json.load(f, object_pairs_hook=OrderedDict)
         for unitdef in unitdefs.values():
             conts = unitdef["used in contexts"]
-            quant = self.quantity_from_string(unitdef["representation in SI or earlier defined unit"])
+            quant = self.quantity_from_string(
+                unitdef["representation in SI or earlier defined unit"]
+            )
             if unitdef["skipped prefixes"]:
                 skipfcn = eval("lambda p: p in {}".format(unitdef["skipped prefixes"]))
             else:
@@ -383,5 +394,5 @@ if __name__ == "__main__":
     u.quantity_from_string("1 m^-1 s")
     print(5 * mHz)
     print(5 * kg)
-    a=5*kg
-    print(a+3*g >> mg)
+    a = 5 * kg
+    print(a + 3 * g >> mg)

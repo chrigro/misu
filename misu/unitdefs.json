@@ -61,11 +61,131 @@
     },
     "volt" : {
         "symbols" : ["V", "volt"],
-        "representation in SI or earlier defined unit" : "W / A",
+        "representation in SI or earlier defined unit" : "W/A",
         "scale factor" : 1.0,
         "representative symbol" : "V",
         "metric prefixes for" : ["V"],
         "category" : "Voltage",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "farad" : {
+        "symbols" : ["F", "farad"],
+        "representation in SI or earlier defined unit" : "C/V",
+        "scale factor" : 1.0,
+        "representative symbol" : "F",
+        "metric prefixes for" : ["F"],
+        "category" : "Capacitance",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "ohm" : {
+        "symbols" : ["ohm"],
+        "representation in SI or earlier defined unit" : "V/A",
+        "scale factor" : 1.0,
+        "representative symbol" : "ohm",
+        "metric prefixes for" : ["ohm"],
+        "category" : "Resistance",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "siemens" : {
+        "symbols" : ["S", "siemens"],
+        "representation in SI or earlier defined unit" : "1/ohm",
+        "scale factor" : 1.0,
+        "representative symbol" : "S",
+        "metric prefixes for" : ["S"],
+        "category" : "Conductance",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "weber" : {
+        "symbols" : ["Wb", "weber"],
+        "representation in SI or earlier defined unit" : "J/A",
+        "scale factor" : 1.0,
+        "representative symbol" : "Wb",
+        "metric prefixes for" : ["Wb"],
+        "category" : "Magnetic flux",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "tesla" : {
+        "symbols" : ["T", "tesla"],
+        "representation in SI or earlier defined unit" : "N/A/m",
+        "scale factor" : 1.0,
+        "representative symbol" : "T",
+        "metric prefixes for" : ["T"],
+        "category" : "Magnetic field strength",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "henry" : {
+        "symbols" : ["H", "henry"],
+        "representation in SI or earlier defined unit" : "V s/A",
+        "scale factor" : 1.0,
+        "representative symbol" : "H",
+        "metric prefixes for" : ["H"],
+        "category" : "Inductance",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "lumen" : {
+        "symbols" : ["lm", "lumen"],
+        "representation in SI or earlier defined unit" : "cd J",
+        "scale factor" : 1.0,
+        "representative symbol" : "lm",
+        "metric prefixes for" : ["lm"],
+        "category" : "Luminous flux",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "lux" : {
+        "symbols" : ["lx", "lux"],
+        "representation in SI or earlier defined unit" : "lm / m^2",
+        "scale factor" : 1.0,
+        "representative symbol" : "lx",
+        "metric prefixes for" : ["lx"],
+        "category" : "",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "becquerel" : {
+        "symbols" : ["Bq", "becquerel"],
+        "representation in SI or earlier defined unit" : "1/s",
+        "scale factor" : 1.0,
+        "representative symbol" : "",
+        "metric prefixes for" : ["Bq"],
+        "category" : "",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "kerma" : {
+        "symbols" : ["Gy", "gray", "kerma"],
+        "representation in SI or earlier defined unit" : "J/kg",
+        "scale factor" : 1.0,
+        "representative symbol" : "",
+        "metric prefixes for" : ["Gy"],
+        "category" : "",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "sievert" : {
+        "symbols" : ["Sv", "sievert"],
+        "representation in SI or earlier defined unit" : "J/kg",
+        "scale factor" : 1.0,
+        "representative symbol" : "Sv",
+        "metric prefixes for" : ["Sv"],
+        "category" : "Radioctivity",
+        "skipped prefixes" : [],
+        "used in contexts" : ["all"]
+    },
+    "katal" : {
+        "symbols" : ["kat", "katal"],
+        "representation in SI or earlier defined unit" : "mol/s",
+        "scale factor" : 1.0,
+        "representative symbol" : "kat",
+        "metric prefixes for" : ["kat"],
+        "category" : "Catalytic activity",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
     }
