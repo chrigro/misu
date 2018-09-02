@@ -398,6 +398,223 @@
           "representation in SI or earlier defined unit" : "s",
           "scale factor" : 604800,
           "used in contexts" : ["extended", "time"]
+      },
+      "square_metre" : {
+          "symbols" : ["m2", "square_metre"],
+          "representation in SI or earlier defined unit" : "m^2",
+          "scale factor" : 1,
+          "category" : "Area",
+          "representative symbol" : "m2",
+          "used in contexts" : ["extended", "area"]
+      },
+      "acre_international" : {
+          "symbols" : ["acre_international"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 4046.8564224,
+          "used in contexts" : ["extended", "area"]
+      },
+      "acre_US_survey" : {
+          "symbols" : ["acre_US_survey"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 4046.873,
+          "used in contexts" : ["extended", "area"]
+      },
+      "are" : {
+          "symbols" : ["are"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 100,
+          "used in contexts" : ["extended", "area"]
+      },
+      "barn" : {
+          "symbols" : ["barn"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1e-28,
+          "used in contexts" : ["extended", "area"]
+      },
+      "barony" : {
+          "symbols" : ["barony"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1.618742e7,
+          "used in contexts" : ["extended", "area"]
+      },
+      "board" : {
+          "symbols" : ["board"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 7.74192e-3,
+          "used in contexts" : ["extended", "area"]
+      },
+      "boiler_horsepower_equivalent_direct_radiation" : {
+          "symbols" : ["boiler_horsepower_equivalent_direct_radiation", "bhp_EDR"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 12.958174,
+          "used in contexts" : ["extended", "area"]
+      },
+      "circular_inch" : {
+          "symbols" : ["circular_inch", "circ_in"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 5.067075e-4,
+          "used in contexts" : ["extended", "area"]
+      },
+      "circular_mil" : {
+          "symbols" : ["circular_mil", "circular_thou", "circ_mil"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 5.067075e-10,
+          "used in contexts" : ["extended", "area"]
+      },
+      "cord" : {
+          "symbols" : ["cord"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1.48644864,
+          "used in contexts" : ["extended", "area"]
+      },
+      "dunam" : {
+          "symbols" : ["dunam"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1000,
+          "used in contexts" : ["extended", "area"]
+      },
+      "guntha" : {
+          "symbols" : ["guntha"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 101.17,
+          "used in contexts" : ["extended", "area"]
+      },
+      "hectare" : {
+          "symbols" : ["hectare", "ha", "hectares"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 10000,
+          "used in contexts" : ["extended", "area"]
+      },
+      "hide" : {
+          "symbols" : ["hide"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 5e5,
+          "used in contexts" : ["extended", "area"]
+      },
+      "rood" : {
+          "symbols" : ["rood", "ro"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1011.7141056,
+          "used in contexts" : ["extended", "area"]
+      },
+      "section" : {
+          "symbols" : ["section"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 2.589988110336e6,
+          "used in contexts" : ["extended", "area"]
+      },
+      "shed" : {
+          "symbols" : ["shed", "sheds"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1e-52,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_roofing" : {
+          "symbols" : ["square_roofing"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 9.290304,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_chain_international" : {
+          "symbols" : ["square_chain_international", "sq_ch"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 404.68564224,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_chain_US_Survey" : {
+          "symbols" : ["square_chain_US_Survey"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 404.6873,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_foot" : {
+          "symbols" : ["square_foot", "sq_ft"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 9.290304e-2,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_foot_US_Survey" : {
+          "symbols" : ["square_foot_US_Survey"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 9.29034116132749e-2,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_inch" : {
+          "symbols" : ["square_inch", "sq_in"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 6.4516e-4,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_kilometre" : {
+          "symbols" : ["square_kilometre", "square_kilometer", "km2"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1e6,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_link_Gunters_International" : {
+          "symbols" : ["square_link_Gunters_International"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 4.0468564224e-2,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_link_Gunters_US_Survey" : {
+          "symbols" : ["square_link_Gunters_US_Survey"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 4.046872e-2,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_link_Ramsdens" : {
+          "symbols" : ["square_link_Ramsdens"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 0.09290304,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_mil" : {
+          "symbols" : ["square_mil", "square_thou", "sq_mil"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 6.4516e-10,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_mile" : {
+          "symbols" : ["square_mile"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 2.589988110336e6,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_mile_US_Survey" : {
+          "symbols" : ["square_mile_US_Survey"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 2.58999847e6,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_rod" : {
+          "symbols" : ["square_rod", "square_pole", "square_perch", "sq_rd"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 25.29285264,
+          "used in contexts" : ["extended", "area"]
+      },
+      "square_yard_International" : {
+          "symbols" : ["square_yard_International", "sq_yd"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 0.83612736,
+          "used in contexts" : ["extended", "area"]
+      },
+      "stremma" : {
+          "symbols" : ["stremma"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1000,
+          "used in contexts" : ["extended", "area"]
+      },
+      "township" : {
+          "symbols" : ["township"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 9.323994e7,
+          "used in contexts" : ["extended", "area"]
+      },
+      "yardland" : {
+          "symbols" : ["yardland"],
+          "representation in SI or earlier defined unit" : "m2",
+          "scale factor" : 1.2e5,
+          "used in contexts" : ["extended", "area"]
       }
-
 }
