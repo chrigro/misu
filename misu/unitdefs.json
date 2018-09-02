@@ -35,7 +35,7 @@
         "scale factor" : 1.0,
         "representative symbol" : "J",
         "metric prefixes for" : ["J"],
-        "category" : "Force",
+        "category" : "Energy",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
     },
@@ -145,7 +145,7 @@
         "scale factor" : 1.0,
         "representative symbol" : "lx",
         "metric prefixes for" : ["lx"],
-        "category" : "",
+        "category" : "Luminosity",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
     },
