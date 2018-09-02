@@ -3,13 +3,14 @@ from __future__ import division, print_function
 from collections import OrderedDict  # OrderedDict: from py 2.7 on
 import sys
 import re
+import functools
 import json
 import inspect
 import os.path as osp
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
-from misu.engine import ESignatureAlreadyRegistered
+from misu.engine import Quantity, QuantityNP, ESignatureAlreadyRegistered
 
 
 class UnitNamespace(object):
@@ -313,6 +314,7 @@ class UnitNamespace(object):
             res = self.dimensionless
         return res
 
+#----- helpers -----
 
 def units_to_this_ns(unit_namespace):
     """Add the units defined in unit_namespace to the callers scope.
@@ -335,57 +337,104 @@ def units_to_this_ns(unit_namespace):
         locals_[symb] = getattr(unit_namespace, symb)
 
 
-# def temperature_value_from_celsius(celsius):
-#     return (celsius - 273.15) * K
+#----- decorators -----
+
+# def my_decorator(func):
+#     @functools.wraps(func)
+#     def wrapper(*args, **kwargs):
+#         # call the wrapped function
+#         res = func(*args, **kwargs)
+#         return res
+#     return wrapper
+
+def noquantity(func):
+    """Decorator to assure the input parameters are no Quantity.
+
+    """
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        # call the wrapped function
+        for arg in args:
+            if isinstance(arg, (Quantity, QuantityNP)):
+                raise TypeError('Quantity arguments not allowed.')
+        for arg in kwargs.values():
+            if isinstance(arg, (Quantity, QuantityNP)):
+                raise TypeError('Quantity arguments not allowed.')
+        res = func(*args, **kwargs)
+        return res
+    return wrapper
 
 
-# def temperature_change_from_celsius(celsius):
-#     # SI root units
-#     return celsius * K
+# This is a decorator that will ensure arguments match declared units
+def dimensions(**_params_):
+    def check_types(_func_, _params_=_params_):
+        def modified(*args, **kw):
+            if sys.version_info.major == 2:
+                arg_names = _func_.func_code.co_varnames
+            elif sys.version_info.major == 3:
+                arg_names = _func_.__code__.co_varnames
+            else:
+                raise Exception("Invalid Python version!")
+            kw.update(zip(arg_names, args))
+            for name, category in _params_.items():
+                param = kw[name]
+                assert isinstance(
+                    param, Quantity
+                ), """Parameter "{}" must be an instance of class Quantity
+(and must be of unit type "{}").""".format(
+                    name, category
+                )
+                assert (
+                    param.unitCategory() == category
+                ), 'Parameter "{}" must be unit type "{}".'.format(
+                    name, category
+                )
+            return _func_(**kw)
+
+        modified.__name__ = _func_.__name__
+        modified.__doc__ = _func_.__doc__
+        # Py 3 only
+        # modified.__annotations__ = _func_.__annotations__
+        return modified
+
+    # For IDEs, make sure the arg lists propagate through to the user
+    return check_types
 
 
-# def temperature_value_from_fahrenheit(fahrenheit):
-#     return (fahrenheit + 459.67) * R
+# ----- helpers for quantities with offset -----
 
+# We do not support quantities with offset. Here are some helpers for temperature values.
 
-# def temperature_change_from_fahrenheit(fahrenheit):
-#     return fahrenheit * R
+@noquantity
+def k_val_from_c(celsius):
+    kelvin = celsius - 273.15
+    return kelvin
 
+@noquantity
+def c_val_from_k(kelvin):
+    celsius = kelvin + 273.15 
+    return celsius
 
-# # This is a decorator that will ensure arguments match declared units
-# def dimensions(**_params_):
-#     def check_types(_func_, _params_=_params_):
-#         def modified(*args, **kw):
-#             if sys.version_info.major == 2:
-#                 arg_names = _func_.func_code.co_varnames
-#             elif sys.version_info.major == 3:
-#                 arg_names = _func_.__code__.co_varnames
-#             else:
-#                 raise Exception("Invalid Python version!")
-#             kw.update(zip(arg_names, args))
-#             for name, category in _params_.items():
-#                 param = kw[name]
-#                 assert isinstance(
-#                     param, Quantity
-#                 ), """Parameter "{}" must be an instance of class Quantity
-# (and must be of unit type "{}").""".format(
-#                     name, category
-#                 )
-#                 assert (
-#                     param.unitCategory() == category
-#                 ), 'Parameter "{}" must be unit type "{}".'.format(
-#                     name, category
-#                 )
-#             return _func_(**kw)
+@noquantity
+def k_val_from_f(fahrenheit):
+    kelvin = (fahrenheit + 459.67) * 5/9
+    return kelvin
 
-#         modified.__name__ = _func_.__name__
-#         modified.__doc__ = _func_.__doc__
-#         # Py 3 only
-#         # modified.__annotations__ = _func_.__annotations__
-#         return modified
+@noquantity
+def f_val_from_k(kelvin):
+    fahrenheit = kelvin * 9/5 - 459.67
+    return fahrenheit
 
-#     # For IDEs, make sure the arg lists propagate through to the user
-#     return check_types
+@noquantity
+def c_val_from_f(fahrenheit):
+    celsius = (fahrenheit - 32) * 5/9
+    return celsius
+
+@noquantity
+def f_val_from_c(celsius):
+    fahrenheit = celsius * 9/5 + 32
+    return fahrenheit
+
 
 if __name__ == "__main__":
     u = UnitNamespace()
@@ -396,3 +445,4 @@ if __name__ == "__main__":
     print(5 * kg)
     a = 5 * kg
     print(a + 3 * g >> mg)
+    k_val_from_c(5)

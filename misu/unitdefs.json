@@ -163,9 +163,9 @@
         "symbols" : ["Gy", "gray", "kerma"],
         "representation in SI or earlier defined unit" : "J/kg",
         "scale factor" : 1.0,
-        "representative symbol" : "",
+        "representative symbol" : "Gy",
         "metric prefixes for" : ["Gy"],
-        "category" : "",
+        "category" : "Radioctivity",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
     },
@@ -173,9 +173,9 @@
         "symbols" : ["Sv", "sievert"],
         "representation in SI or earlier defined unit" : "J/kg",
         "scale factor" : 1.0,
-        "representative symbol" : "Sv",
+        "representative symbol" : "",
         "metric prefixes for" : ["Sv"],
-        "category" : "Radioctivity",
+        "category" : "",
         "skipped prefixes" : [],
         "used in contexts" : ["all"]
     },
