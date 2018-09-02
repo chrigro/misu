@@ -40,9 +40,9 @@ class UnitNamespace(object):
             symbols=["m", "metre", "metres", "meter", "meters"],
             sidict=dict(m=1.0),
             scale_factor=1.0,
+            unit_category="Length",
             representative_symbol="m",
             create_metric_prefixes_for=["m"],
-            unit_category="Length",
             metric_skip_function=None,
         )
 
@@ -51,21 +51,21 @@ class UnitNamespace(object):
             symbols=["g", "grams", "gram"],
             sidict=dict(kg=1.0),
             scale_factor=1.0,
+            unit_category="Mass",
             representative_symbol="",
             create_metric_prefixes_for=["g"],
-            unit_category="Mass",
             metric_skip_function=None,
         )
-        self.g.setRepresent(as_unit=self.kg, symbol="kg")
+        self.g.setRepresent(self.kg, "kg")
 
         # seconds
         self.add_unit(
             symbols=["s", "second", "sec", "seconds", "secs"],
             sidict=dict(s=1.0),
             scale_factor=1.0,
+            unit_category="Time",
             representative_symbol="s",
             create_metric_prefixes_for=["s"],
-            unit_category="Time",
             metric_skip_function=lambda p: p in ["a"],  # no "as" since it is a keyword
         )
 
@@ -74,9 +74,9 @@ class UnitNamespace(object):
             symbols=["A", "ampere", "amperes", "amp", "amps"],
             sidict=dict(A=1.0),
             scale_factor=1.0,
+            unit_category="Electric current",
             representative_symbol="A",
             create_metric_prefixes_for=["A"],
-            unit_category="Electric current",
             metric_skip_function=None,
         )
 
@@ -85,9 +85,9 @@ class UnitNamespace(object):
             symbols=["K", "kelvin"],
             sidict=dict(K=1.0),
             scale_factor=1.0,
+            unit_category="Temperature",
             representative_symbol="K",
             create_metric_prefixes_for=["K"],
-            unit_category="Temperature",
             metric_skip_function=None,
         )
 
@@ -96,9 +96,9 @@ class UnitNamespace(object):
             symbols=["cd", "candela", "ca"],
             sidict=dict(cd=1.0),
             scale_factor=1.0,
+            unit_category="Luminous intensity",
             representative_symbol="cd",
             create_metric_prefixes_for=["cd"],
-            unit_category="Luminous intensity",
             metric_skip_function=None,
         )
 
@@ -107,9 +107,9 @@ class UnitNamespace(object):
             symbols=["mol", "mole", "moles"],
             sidict=dict(mol=1.0),
             scale_factor=1.0,
+            unit_category="Ammount of substance",
             representative_symbol="mol",
             create_metric_prefixes_for=["mol"],
-            unit_category="Ammount of substance",
             metric_skip_function=None,
         )
 
@@ -121,9 +121,9 @@ class UnitNamespace(object):
         symbols,
         sidict,
         scale_factor,
-        representative_symbol,
+        unit_category = "",
+        representative_symbol = "",
         create_metric_prefixes_for=[],
-        unit_category="",
         metric_skip_function=None,
     ):
         """Add a unit to the namespace.
@@ -140,18 +140,20 @@ class UnitNamespace(object):
         scale_factor : float
             Scale factor of the quantity.
 
-        representative_symbol : string on None (default: None)
+        unit_category : string (default: "")
+            Category the unit belongs to. A unit category is defined by having a unique 
+            decomposition in SI base units. This should be specified for the first unit 
+            per category only. Otherwise a ESignatureAlreadyRegistered is triggered, 
+            which is caugth and translated into a warning.
+
+        representative_symbol : string (default: "")
             Symbol that should be used to represent the unit in a result of a calculation.
-            Must be in symbols.
+            Must be in symbols. Note that the each value here overides the previously set
+            representative symbol for the unit category (see unit_category above).
 
         create_metric_prefixes_for : list of unit symbols (default: empty list)
             List of symbols (must also be in symbols) to create derived units with the
             metric prefixes.
-
-        unit_category : string or None (default: None)
-            Category the unit belongs to. This should be specified for the first unit per
-            unique composition in SI units only. Otherwise a ESignatureAlreadyRegistered
-            is triggered, which is caugth and translated into a warning.
 
         metric_skip_function : callable (default: None)
             Callable that returns true for the metric prefixes for which the prefixed
@@ -161,8 +163,15 @@ class UnitNamespace(object):
         # First define the quantity based on si
         quantity = engine.Quantity(scale_factor)
         quantity.setValDict(sidict)
-        # Add to category
-        if unit_category is not "":
+        # Add to registry and namespace
+        for symbol in symbols:
+            symbol = symbol.strip()
+            if symbol == "":
+                continue
+            self._add_quant_attr(symbol, quantity)
+            self._add_to_registry(symbol, quantity)
+        # Add category
+        if not unit_category == "":
             # print("Adding type {} to category {}".format(quantity.units(), unit_category))
             try:
                 engine.addType(quantity, str(unit_category))
@@ -172,18 +181,11 @@ class UnitNamespace(object):
                         symbols[0], unit_category, e
                     )
                 )
-        # Representative symbol
+        # Set representative symbol
         if not representative_symbol == "":
             self._check_represent(representative_symbol, symbols)
             quantity.setRepresent(as_unit=quantity, symbol=representative_symbol)
-        # Add to registry and namespace
-        for symbol in symbols:
-            symbol = symbol.strip()
-            if symbol == "":
-                continue
-            self._add_quant_attr(symbol, quantity)
-            self._add_to_registry(symbol, quantity)
-        # Metric prefixes for the first symbol
+        # Metric prefixes
         if not create_metric_prefixes_for == []:
             self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
             for symbol in create_metric_prefixes_for:
@@ -262,9 +264,9 @@ class UnitNamespace(object):
                     symbols=unitdef["symbols"],
                     sidict=self._get_si_dict(quant),
                     scale_factor=unitdef["scale factor"],
+                    unit_category=unitdef["category"],
                     representative_symbol=unitdef["representative symbol"],
                     create_metric_prefixes_for=unitdef["metric prefixes for"],
-                    unit_category=unitdef["category"],
                     metric_skip_function=skipfcn,
                 )
 
@@ -533,7 +535,7 @@ def f_val_from_c(celsius):
 
 
 if __name__ == "__main__":
-    u = UnitNamespace("extended")
+    u = UnitNamespace("exotic")
     units_to_this_ns(u)
     print(m)
     u.quantity_from_string("1 m^-1 s")

@@ -1,62 +1,8 @@
-# coding=utf-8
-
-from __future__ import division, print_function
-from misu.engine import addType, Quantity
-from misu.misulib import createUnit
-
-
-
-
-# SI derived units (definitions) https://physics.nist.gov/cuu/Units/units.html
-
-
-
-
-
-
-
 
 
 ############ Big list of definitions #################################################
 
-# Temperature
-createUnit("R rankine", K * 5. / 9.)
 
-# Time
-createUnit('minute mins minutes', 60 * s)
-createUnit('yr year years year_Gregorian', 31556952 * s)
-createUnit('year_Julian', 31557600 * s)
-createUnit('year_sidereal', 31558149.7632 * s)
-createUnit('year_tropical', 31556925 * s)
-createUnit('au atomic_unit_of_time', 2.418884254e-17 * s)
-createUnit('Callippic_cycle ', 2.3983776e9 * s)
-createUnit('century centuries', 100 * years)
-createUnit('d day days', 86400 * s)
-createUnit('day_sidereal', 86164.1 * s)
-createUnit('dec decade decades', 10 * years)
-createUnit('fn fortnight fortnights', 1209600 * s)
-createUnit('helek', 3.3 * s)
-createUnit('Hipparchic_cycle', 9.593424e9 * s)
-createUnit('hr hour hrs hours', 3600 * s)
-createUnit('j jiffy', .016 * s)
-createUnit('ja jiffy_alternate', 10 * ms)
-createUnit('ke_quarter_of_an_hour ', 15 * minutes)
-createUnit('ke_traditional ', 14.4 * minutes)
-createUnit('lustre  lustrum ', 1.5768e8 * s)
-createUnit('Metonic_cycle  enneadecaeteris ', 5.99616e8 * s)
-createUnit('millennium ', 1000 * years)
-createUnit('moment ', 90 * s)
-createUnit('month_full', 2592000 * s)
-createUnit('month_Greg_avg', 2.6297e6 * s)
-createUnit('month_hollow', 2505600 * s)
-createUnit('month_synodic', 2.551e6 * s)
-createUnit('octaeteris', 2.524608e8 * s)
-createUnit('Planck_time', 1.351211868e-43 * s)
-createUnit('shake shakes', 10 * ns)
-createUnit('sigma ', 1 * us)
-createUnit('Sothic_cycle ', 4.6074096e10 * s)
-createUnit('svedberg  S ', 100 * fs)
-createUnit('wk wks week weeks', 604800 * s)
 
 # Area
 createUnit('m2 square_metre_SI_unit', 1 * m ** 2, unitCategory='Area')
