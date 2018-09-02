@@ -314,7 +314,9 @@ class UnitNamespace(object):
             res = self.dimensionless
         return res
 
-#----- helpers -----
+
+# ----- helpers -----
+
 
 def units_to_this_ns(unit_namespace):
     """Add the units defined in unit_namespace to the callers scope.
@@ -337,7 +339,7 @@ def units_to_this_ns(unit_namespace):
         locals_[symb] = getattr(unit_namespace, symb)
 
 
-#----- decorators -----
+# ----- decorators -----
 
 # def my_decorator(func):
 #     @functools.wraps(func)
@@ -347,28 +349,103 @@ def units_to_this_ns(unit_namespace):
 #         return res
 #     return wrapper
 
+
 def noquantity(func):
     """Decorator to assure the input parameters are no Quantity.
 
+    Notes
+    -----
+    Usage example:
+
+        @noquantity
+        def example(a, b):
+            # do something
+
     """
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         # call the wrapped function
         for arg in args:
             if isinstance(arg, (Quantity, QuantityNP)):
-                raise TypeError('Quantity arguments not allowed.')
+                raise TypeError("Quantity arguments not allowed.")
         for arg in kwargs.values():
             if isinstance(arg, (Quantity, QuantityNP)):
-                raise TypeError('Quantity arguments not allowed.')
+                raise TypeError("Quantity arguments not allowed.")
         res = func(*args, **kwargs)
         return res
+
     return wrapper
+
+
+def calc_unitless(out_unit_list, **in_unit_kwargs):
+    """Decorator to convert the input parameters to magnitude and the output
+    parameter back to quantity.
+
+    Parameters
+    ----------
+    out_unit_list : list of Quantities
+        Units of the output in correct order.
+
+    in_unit_kwargs : Quantities as keyword arguments
+        Use this to specify the Quantities to which the input arguments should be
+        converted to.
+
+    Notes
+    -----
+    Usage example:
+
+        @dimensions([u.m/u.s, u.kg], a=u.m, b=u.s, c=u.kg)
+        def example(a, b, c=u.kg):
+            # do something
+            return a/b, c
+
+    """
+
+    def calc_unitless_decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # names of the arguments
+            if sys.version_info.major == 2:
+                arg_names = func.func_code.co_varnames
+            elif sys.version_info.major == 3:
+                arg_names = func.__code__.co_varnames
+            else:
+                raise Exception("Invalid Python version!")
+            # transfer args to kwargs
+            kwargs.update(zip(arg_names, args))
+
+            # now do the conversion
+            if not in_unit_kwargs.keys() == kwargs.keys():
+                raise ValueError(
+                    "Unit keyword arguments must match the function parameter names."
+                )
+            conv_kwargs = {}
+            for kk in in_unit_kwargs.keys():
+                conv_kwargs[kk] = kwargs[kk].convert(in_unit_kwargs[kk])
+
+            # call the function and convert the result.
+            res = func(**conv_kwargs)
+            if isinstance(res, (list, tuple)):
+                if not len(res) == len(out_unit_list):
+                    raise ValueError(
+                        "Number of output quantities must match the number of the function return values."
+                    )
+                return [r * out_unit_list[jj] for jj, r in enumerate(res)]
+            else:
+                return res * out_unit_list[0]
+
+        return wrapper
+
+    return calc_unitless_decorator
 
 
 # This is a decorator that will ensure arguments match declared unit category
 def dimensions(**_params_):
     """Decorator to assure the parameters given have the correct unit category.
 
+    Notes
+    -----
     Usage example:
 
         @dimensions(a='Length', b='Time')
@@ -376,6 +453,7 @@ def dimensions(**_params_):
             # do something
 
     """
+
     def check_types(_func_, _params_=_params_):
         def modified(*args, **kw):
             if sys.version_info.major == 2:
@@ -414,34 +492,40 @@ def dimensions(**_params_):
 
 # We do not support quantities with offset. Here are some helpers for temperature values.
 
+
 @noquantity
 def k_val_from_c(celsius):
     kelvin = celsius - 273.15
     return kelvin
 
+
 @noquantity
 def c_val_from_k(kelvin):
-    celsius = kelvin + 273.15 
+    celsius = kelvin + 273.15
     return celsius
+
 
 @noquantity
 def k_val_from_f(fahrenheit):
-    kelvin = (fahrenheit + 459.67) * 5/9
+    kelvin = (fahrenheit + 459.67) * 5 / 9
     return kelvin
+
 
 @noquantity
 def f_val_from_k(kelvin):
-    fahrenheit = kelvin * 9/5 - 459.67
+    fahrenheit = kelvin * 9 / 5 - 459.67
     return fahrenheit
+
 
 @noquantity
 def c_val_from_f(fahrenheit):
-    celsius = (fahrenheit - 32) * 5/9
+    celsius = (fahrenheit - 32) * 5 / 9
     return celsius
+
 
 @noquantity
 def f_val_from_c(celsius):
-    fahrenheit = celsius * 9/5 + 32
+    fahrenheit = celsius * 9 / 5 + 32
     return fahrenheit
 
 
@@ -456,8 +540,14 @@ if __name__ == "__main__":
     print(a + 3 * g >> mg)
     k_val_from_c(5)
 
-    @dimensions(a='Length')
+    @dimensions(a="Length")
     def test(a):
         return a
 
-    test(5*s)
+    test(5 * m)
+
+    @calc_unitless([u.m / u.s, u.m], a=u.m, b=u.s)
+    def test2(a, b):
+        return a / b, a
+
+    print(test2(5 * u.m, 2 * u.s))
