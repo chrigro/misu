@@ -75,7 +75,7 @@ class PhysConst(object):
 
 if __name__ == '__main__':
     import misulib
-    u = misulib.UnitNamespace()
+    u = misulib.UnitNamespace('si')
     const = PhysConst(u)
     # print(const.available_constants)
     for name, shortname in const.available_constants.items():

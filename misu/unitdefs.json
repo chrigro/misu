@@ -7,7 +7,7 @@
         "metric prefixes for" : ["Hz"],
         "category" : "Frequency",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "newton" : {
         "symbols" : ["N", "newton"],
@@ -17,7 +17,7 @@
         "metric prefixes for" : ["N"],
         "category" : "Force",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "pascal" : {
         "symbols" : ["Pa", "pascal"],
@@ -27,7 +27,7 @@
         "metric prefixes for" : ["Pa"],
         "category" : "Pressure",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "joule" : {
         "symbols" : ["J", "joule"],
@@ -37,7 +37,7 @@
         "metric prefixes for" : ["J"],
         "category" : "Energy",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "watt" : {
         "symbols" : ["W", "watt"],
@@ -47,7 +47,7 @@
         "metric prefixes for" : ["W"],
         "category" : "Power",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "coulomb" : {
         "symbols" : ["C", "coulomb"],
@@ -57,7 +57,7 @@
         "metric prefixes for" : ["C"],
         "category" : "Electric charge",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "volt" : {
         "symbols" : ["V", "volt"],
@@ -67,7 +67,7 @@
         "metric prefixes for" : ["V"],
         "category" : "Voltage",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "farad" : {
         "symbols" : ["F", "farad"],
@@ -77,7 +77,7 @@
         "metric prefixes for" : ["F"],
         "category" : "Capacitance",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "ohm" : {
         "symbols" : ["ohm"],
@@ -87,7 +87,7 @@
         "metric prefixes for" : ["ohm"],
         "category" : "Resistance",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "siemens" : {
         "symbols" : ["S", "siemens"],
@@ -97,7 +97,7 @@
         "metric prefixes for" : ["S"],
         "category" : "Conductance",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "weber" : {
         "symbols" : ["Wb", "weber"],
@@ -107,7 +107,7 @@
         "metric prefixes for" : ["Wb"],
         "category" : "Magnetic flux",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "tesla" : {
         "symbols" : ["T", "tesla"],
@@ -117,7 +117,7 @@
         "metric prefixes for" : ["T"],
         "category" : "Magnetic field strength",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "henry" : {
         "symbols" : ["H", "henry"],
@@ -127,7 +127,7 @@
         "metric prefixes for" : ["H"],
         "category" : "Inductance",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "lumen" : {
         "symbols" : ["lm", "lumen"],
@@ -137,7 +137,7 @@
         "metric prefixes for" : ["lm"],
         "category" : "Luminous flux",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "lux" : {
         "symbols" : ["lx", "lux"],
@@ -147,7 +147,7 @@
         "metric prefixes for" : ["lx"],
         "category" : "Luminosity",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "becquerel" : {
         "symbols" : ["Bq", "becquerel"],
@@ -157,7 +157,7 @@
         "metric prefixes for" : ["Bq"],
         "category" : "",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "kerma" : {
         "symbols" : ["Gy", "gray", "kerma"],
@@ -167,7 +167,7 @@
         "metric prefixes for" : ["Gy"],
         "category" : "Radioctivity",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "sievert" : {
         "symbols" : ["Sv", "sievert"],
@@ -177,7 +177,7 @@
         "metric prefixes for" : ["Sv"],
         "category" : "",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     },
     "katal" : {
         "symbols" : ["kat", "katal"],
@@ -187,7 +187,7 @@
         "metric prefixes for" : ["kat"],
         "category" : "Catalytic activity",
         "skipped prefixes" : [],
-        "used in contexts" : ["all"]
+        "used in contexts" : ["all", "si"]
     }
 }
 
