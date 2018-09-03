@@ -77,8 +77,8 @@ code above produces:
 
     220.46226218487757
 
-There are many units already defined, and it is easy to add more. Here
-we convert the same quantity into ounces:
+There are many units already defined (look at `unitdefs.json`), and it is easy
+to add more. Here we convert the same quantity into ounces:
 
 .. code:: python
 
@@ -164,7 +164,7 @@ Features
    ``EIncompatibleUnits`` exception is raised, with a clear explanation
    message about which units were inconsistent.
 
--  Decorators for functions to enforce dimensions
+-  Decorator for functions to enforce dimensions
 
 .. code:: python
 
@@ -177,6 +177,18 @@ Features
 
     f(2*joules, 3*kelvin)  # raises AssertionError
     f(2*m, 3)              # raises AssertionError
+
+-  Decorator for functions to convert the input quantities to a specified unit,
+   perform the calculation only on the magnitude and add the output units to
+   return a Quantity again.
+
+    @calc_unitless([m/s, s], x=m, y=s)
+    def f(x, y):
+        return x/y, y
+
+    print(f(2*m, 3*s))      # returns [0.667 m/s, 3 s]
+
+    print(f(2*kg, 3*s))     # raises EIncompatibleUnits error.
 
 -  An operator for easily stripping the units component to obtain a
    plain numerical value
@@ -197,8 +209,13 @@ Features
    have to look it up. ``ft``, ``foot`` and ``feet`` all work, ``m3``
    means ``m**3`` and so on.
 -  You can specify a *reporting unit* for a dimension, meaning that you
-   could have all lengths be reported in "feet" by default for example.
--  You can specify a *reporting format* for a particular unit.
+   could have all lengths be reported in "feet" by default for example. You can
+   specify a *reporting format* for a particular unit. This is realized by
+   using the `Quantity.setRepresent` method. Its `convert_function` argument
+   even allows you to report in another unit category, for example,
+   automatically report all energies in Hz (by dividing by Planck's constant.)
+-  As ``misu`` does not support quantities that have an offset wrt. SI units (the most common example are the temperature units Farenheit and Celsius), it ships with helper functions `misu.xx_val_from_yy(yy-magnitude)` to convert magnitudes between those units.
+-  Misu ships with build in physical constants which are taken from scipy if installed. If scipy is not found, fallback values are used. See `misu.__init__.py` to see the main objects the library supplies.
 
 There are other projects, why ``misu``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -215,23 +232,13 @@ them yet.*
 General usage
 -------------
 
-For speed-critical code, the application of unit operations can still be
-too slow. In these situations it is typical to first cast quantities
-into numerical values (doubles, say), perform the speed-critical
-calculations (perhaps call into a C-library), and then re-cast the
-result back into a quantity and return that from a function.
-
-.. code:: python
-
-    @dimensions(x='Length', y='Mass')
-    def f(x, y):
-        x = x >> metre
-        y = y >> ounces
-        <code that assumes meters and ounces, returns value in BTU>
-        return answer * BTU
-
-This way you can still easily wrap performance-critical calculations
-with robust unit-handling.
+For speed-critical code, the application of unit operations can still be too
+slow. In these situations it is typical to first cast quantities into numerical
+values (doubles, say), perform the speed-critical calculations (perhaps call
+into a C-library), and then re-cast the result back into a quantity and return
+that from a function. That's the intention behind the `@calc_unitless`
+decorator explained above. This way you can still easily wrap
+performance-critical calculations with robust unit-handling.
 
 Inspiration
 ^^^^^^^^^^^
