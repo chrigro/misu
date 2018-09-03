@@ -2008,7 +2008,7 @@
         "used in contexts" : ["extended", "length"]
     },
     "atomic_mass_unit_unified" : {
-        "symbols" : ["AMU", "atomic_mass_unit_unified"],
+        "symbols" : ["mu", "atomic_mass_unit_unified"],
         "representation in SI or earlier defined unit" : "kg",
         "scale factor" : 1.66053873e-27,
         "used in contexts" : ["extended", "mass", "physics"]
