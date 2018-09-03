@@ -37,6 +37,8 @@ setup(
     ],
     keywords='math science engineering physics quantities units',
     packages=['misu'],
+    include_package_data=True,
+    package_data={'misu': ['misu/unitdevs.json']},
     install_requires=['cython', 'numpy'],
     ext_modules=cythonize("misu/*.pyx"),
     include_dirs=[numpy.get_include()]

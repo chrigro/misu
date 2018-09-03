@@ -214,8 +214,18 @@ Features
    using the `Quantity.setRepresent` method. Its `convert_function` argument
    even allows you to report in another unit category, for example,
    automatically report all energies in Hz (by dividing by Planck's constant.)
--  As ``misu`` does not support quantities that have an offset wrt. SI units (the most common example are the temperature units Farenheit and Celsius), it ships with helper functions `misu.xx_val_from_yy(yy-magnitude)` to convert magnitudes between those units.
--  Misu ships with build in physical constants which are taken from scipy if installed. If scipy is not found, fallback values are used. See `misu.__init__.py` to see the main objects the library supplies.
+-  As ``misu`` does not support quantities that have an offset wrt. SI units
+   (the most common example are the temperature units Farenheit and Celsius),
+   it ships with helper functions `misu.xx_val_from_yy(yy-magnitude)` to
+   convert magnitudes between those units.
+-  Misu ships with build in physical constants which are taken from scipy if
+   installed. If scipy is not found, fallback values are used. See
+   `misu.__init__.py` to see the main objects the library supplies.
+-  Control over which quantities are available in the UnitNamespace via the
+   `context` parameter. This is useful in cases where there are conflicting
+   unit symbols. Instantiating `context='all'` loads all defined symbols. This
+   only works if there are no conflicting definitions.
+
 
 There are other projects, why ``misu``?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
