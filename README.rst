@@ -57,18 +57,21 @@ Demo
 ----
 
 Most of the time you will probably work with ``misu`` interactively, and
-it will be most convenient to import the entire namespace:
+it will be most convenient to import the unit symbols into the global namespace:
 
 .. code:: python
 
-    from misu import *
+    import misu
+
+    u = misu.UnitNamespace(context='all')
+    misu.units_to_this_ns(u)
 
     mass = 100*kg
     print(mass >> lb)
 
-The symbol ``kg`` got imported from the ``misu`` package. We redefine
-the shift operator to perform inline conversions. The code above
-produces:
+The symbol ``kg`` defined in the UnitNamespace u is no known in global
+namespace. We redefine the shift operator to perform inline conversions. The
+code above produces:
 
 ::
 

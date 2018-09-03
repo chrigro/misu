@@ -49,15 +49,21 @@ class UnitNamespace(object):
 
         # kg (special since prefix already included)
         self.add_unit(
-            symbols=["g", "grams", "gram"],
+            symbols=["kg", "kilograms", "kilogram"],
             sidict=dict(kg=1.0),
             scale_factor=1.0,
             unit_category="Mass",
-            representative_symbol="",
-            create_metric_prefixes_for=["g"],
+            representative_symbol="kg",
+            create_metric_prefixes_for=[],
             metric_skip_function=None,
         )
-        self.g.setRepresent(self.kg, "kg")
+        self.add_unit(
+            symbols=["g", "grams", "gram"],
+            sidict=dict(kg=1.0),
+            scale_factor=1e-3,
+            create_metric_prefixes_for=["g"],
+            metric_skip_function=lambda p: p in ["k"],  # kg are already there.
+        )
 
         # seconds
         self.add_unit(
@@ -574,3 +580,16 @@ if __name__ == "__main__":
         return a / b, a
 
     print(test2(5 * u.m, 2 * u.s))
+
+    # information on units
+    aa = u.ng
+    print(aa.unitCategory())
+    print(aa.units())
+    print(aa.unitString())
+
+    # test a more complex setRepresent
+    bb = 1e-18 * u.J
+    print(bb)
+    # report energies in Hz
+    bb.setRepresent(symbol='Hz', convert_function=lambda q, mag: mag/6.62607004e-34 )
+    print(bb)
