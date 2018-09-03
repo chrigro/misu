@@ -18,6 +18,8 @@ class UnitNamespace(object):
 
     """
 
+    si_symbols = ["m", "kg", "s", "A", "K", "cd", "mol"]
+
     def __init__(self, context="si"):
         """Initialize the unit namespace.
 
@@ -145,7 +147,7 @@ class UnitNamespace(object):
             Dictionary with base SI units as keys and the exponent as value.
 
         scale_factor : float
-            Scale factor of the quantity.
+            Scale factor **wrt the SI units** of the quantity.
 
         unit_category : string (default: "")
             Category the unit belongs to. A unit category is defined by having a unique 
@@ -263,6 +265,7 @@ class UnitNamespace(object):
                 quant = self.quantity_from_string(
                     unitdef["representation in SI or earlier defined unit"]
                 )
+                mag_si = self._get_si_mag(quant)
                 # optional stuff
                 if "category" in unitdef.keys():
                     cat = unitdef["category"]
@@ -287,7 +290,7 @@ class UnitNamespace(object):
                 self.add_unit(
                     symbols=unitdef["symbols"],
                     sidict=self._get_si_dict(quant),
-                    scale_factor=unitdef["scale factor"],
+                    scale_factor=unitdef["scale factor"] * mag_si,
                     unit_category=cat,
                     representative_symbol=rep_sym,
                     create_metric_prefixes_for=prefixes,
@@ -296,12 +299,19 @@ class UnitNamespace(object):
 
     def _get_si_dict(self, quant):
         """Get the si dictionary for quant."""
-        si_symbols = ["m", "kg", "s", "A", "K", "cd", "mol"]
         res = {}
         unitlist = quant.units()
-        for ii, si_sym in enumerate(si_symbols):
+        for ii, si_sym in enumerate(self.si_symbols):
             if unitlist[ii] != 0:
                 res[si_sym] = unitlist[ii]
+        return res
+
+    def _get_si_mag(self, quant):
+        """Get the magnitude of quant when expressed in si units."""
+        sidict = self._get_si_dict(quant)
+        si_quant = engine.Quantity(1)
+        si_quant.setValDict(sidict)
+        res = quant.convert(si_quant)
         return res
 
     def quantity_from_string(self, string):
