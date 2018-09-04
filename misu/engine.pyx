@@ -690,7 +690,7 @@ cdef inline QuantityNP assertQuantityNP(x):
         out.setunit(a)
         return out
     else:
-        return QuantityNP.__new__(QuantityNP, x)
+        return QuantityNP.__new__(QuantityNP, np.array(x))
 
 @cython.freelist(8)
 cdef class QuantityNP:
