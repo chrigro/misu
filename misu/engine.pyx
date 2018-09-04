@@ -13,9 +13,6 @@ from cpython.array cimport array, copy
 
 from libc.string cimport strcmp
 
-cdef class Quantity
-cdef class QuantityNP
-
 
 class EIncompatibleUnits(Exception):
     pass
@@ -23,6 +20,10 @@ class EIncompatibleUnits(Exception):
 
 class ESignatureAlreadyRegistered(Exception):
     pass
+
+
+cdef class Quantity
+cdef class QuantityNP
 
 
 ctypedef fused Quant:
@@ -61,12 +62,12 @@ cdef inline int isQuantityT(Quant var):
 ctypedef double[7] uarray
 
 
-cdef inline void copyunits(Quant source, Quant dest):
+cdef inline void copyunits(Quant source, Quant dest, float power):
     ''' Cython limitations require that both source and dest are the same
     type. '''
     cdef int i
     for i from 0 <= i < 7:
-        dest.unit[i] = source.unit[i]
+        dest.unit[i] = source.unit[i] * power
 
 
 QuantityType = {}
@@ -121,6 +122,8 @@ cdef class _UnitRegistry:
         self._name_by_unit = {}
 
     def add(self, str symbols, Quantity quantity, str quantity_name = None):
+        if quantity.mag_is_array == 1:
+            raise Exception('Array valued quantities cannot be used to define new quantities.')
         # Split up the string of symbols
         cdef list symbols_list = [
             s.strip() for s in symbols.strip().split(' ') if s.strip() != '']
@@ -230,28 +233,38 @@ cdef array _nou  = array('d', [0,0,0,0,0,0,0])
 
 @cython.freelist(8)
 cdef class Quantity:
-    cdef readonly double magnitude
+    cdef readonly double _magnitude
+    cdef readonly np.ndarray _magnitudeNP
+    cdef readonly int mag_is_array
     cdef uarray unit
     __array_priority__ = 20.0
 
-    def __cinit__(self, double magnitude):
-        self.magnitude = magnitude
-        #self.stddev = 0
+    def __cinit__(self, magnitude):
+        if not isinstance(magnitude, np.ndarray):
+            self.mag_is_array = 0
+            self._magnitude = magnitude
+        else:
+            self.mag_is_array = 1
+            self._magnitudeNP = magnitude
         self.unit[:] = [0,0,0,0,0,0,0]
 
-    ##Pickling support
+    def magnitude(self):
+        if self.mag_is_array == 0:
+            return self._magnitude
+        else:
+            return self._magnitudeNP
+        
+
+    # ------ Pickling support ------
+
     def __reduce__(self):
-       return (Quantity, (self.magnitude,), self.getunit(), None, None)
+        return (Quantity, (self.magnitude,), self.getunit(), None, None)
 
     def __setstate__(self, unit):
         self.setunit(unit)
 
-#    def __array_wrap__(array, context=None):
-#        return
 
-
-
-    # Implement some numpy functions
+    # ------ Implement some numpy functions ------
 
     def _check_dimensionless(self):
             if self.unitCategory() != 'Dimensionless':
@@ -429,7 +442,10 @@ cdef class Quantity:
         return out
 
     cpdef tuple as_tuple(self):
-        return (self.magnitude, self.unit_as_tuple())
+        if self.mag_is_array == 0:
+            return (self._magnitude, self.unit_as_tuple())
+        else:
+            raise Exception("Only available for scalar Quantities.")
 
     def unitString(self):
         if self.unit_as_tuple() in RepresentCache:
@@ -445,6 +461,7 @@ cdef class Quantity:
         if self.unit_as_tuple() in RepresentCache:
             r = RepresentCache[self.unit_as_tuple()]
             return r['convert_function'](self, self.magnitude)
+
         else:
             return self.magnitude
 
@@ -458,17 +475,13 @@ cdef class Quantity:
     def _getRepresentTuple(self):
         if self.unit_as_tuple() in RepresentCache:
             r = RepresentCache[self.unit_as_tuple()]
-            mag = r['convert_function'](self, self.magnitude)
-            symbol = r['symbol']
             format_spec = r['format_spec']
         else:
-            mag = self.magnitude
-            symbol = self.unitString()
             format_spec = ''
         # Temporary fix for a numpy display issue
-        if not type(mag) in [float, int]:
+        if self.mag_is_array == 1:
             format_spec = ''
-        return mag, symbol, format_spec
+        return self._getmagnitude(), self._getsymbol(), format_spec
 
     def __str__(self):
         mag, symbol, format_spec = self._getRepresentTuple()
@@ -481,61 +494,29 @@ cdef class Quantity:
     def __repr__(self):
         return str(self)
 
-#    cdef inline sameunits(Quant self, Quant other):
-#        cdef int i
-#        for i from 0 <= i < 7:
-#            if self.unit[i] != other.unit[i]:
-#                raise EIncompatibleUnits('Incompatible units: {} and {}'.format(self, other))
-
     def __add__(x, y):
-        cdef QuantityNP xqn
-        cdef QuantityNP yqn
-        cdef QuantityNP ansn
-
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
 
-        cdef int i
-
-        if isinstance(x, np.ndarray) or isinstance(y, np.ndarray) \
-            or isinstance(x, QuantityNP) or isinstance(y, QuantityNP):
-            xqn = assertQuantityNP(x)
-            yqn = assertQuantityNP(y)
-            return xqn + yqn
-        else:
-            xq = assertQuantity(x)
-            yq = assertQuantity(y)
-            ans = Quantity.__new__(Quantity, xq.magnitude + yq.magnitude)
-            sameunits(xq, yq)
-            for i from 0 <= i < 7:
-                ans.unit[i] = xq.unit[i]
-            return ans
+        xq = assertQuantity(x)
+        yq = assertQuantity(y)
+        ans = Quantity.__new__(Quantity, xq.magnitude + yq.magnitude)
+        sameunits(xq, yq)
+        copyunits(xq, ans, 1)
+        return ans
 
     def __sub__(x, y):
-        cdef QuantityNP xqn
-        cdef QuantityNP yqn
-        cdef QuantityNP ansn
-
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
 
-        cdef int i
-
-        if isinstance(x, np.ndarray) or isinstance(y, np.ndarray) \
-            or isinstance(x, QuantityNP) or isinstance(y, QuantityNP):
-            xqn = assertQuantityNP(x)
-            yqn = assertQuantityNP(y)
-            return xqn - yqn
-        else:
-            xq = assertQuantity(x)
-            yq = assertQuantity(y)
-            ans = Quantity.__new__(Quantity, xq.magnitude - yq.magnitude)
-            sameunits(xq, yq)
-            for i from 0 <= i < 7:
-                ans.unit[i] = xq.unit[i]
-            return ans
+        xq = assertQuantity(x)
+        yq = assertQuantity(y)
+        ans = Quantity.__new__(Quantity, xq.magnitude - yq.magnitude)
+        sameunits(xq, yq)
+        copyunits(xq, ans, 1)
+        return ans
 
     def unpack_or_default(self, other):
         try:
@@ -543,33 +524,21 @@ cdef class Quantity:
         except:
             return _nou
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def __mul__(x, y):
-        cdef QuantityNP xqn
-        cdef QuantityNP yqn
-        cdef QuantityNP ansn
-
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
-
         cdef int i
 
-        if isinstance(x, np.ndarray) or isinstance(y, np.ndarray) \
-            or isinstance(x, QuantityNP) or isinstance(y, QuantityNP):
-            xqn = assertQuantityNP(x)
-            yqn = assertQuantityNP(y)
-            ansn = QuantityNP.__new__(QuantityNP, xqn.magnitude * yqn.magnitude)
-            for i from 0 <= i < 7:
-                ansn.unit[i] = xqn.unit[i] + yqn.unit[i]
-            return ansn
-        else:
-            xq = assertQuantity(x)
-            yq = assertQuantity(y)
-            ans = Quantity.__new__(Quantity, xq.magnitude * yq.magnitude)
-            for i from 0 <= i < 7:
-                ans.unit[i] = xq.unit[i] + yq.unit[i]
-            return ans
+        xq = assertQuantity(x)
+        yq = assertQuantity(y)
+        ans = Quantity.__new__(Quantity, xq.magnitude * yq.magnitude)
+        for i from 0 <= i < 7:
+            ans.unit[i] = xq.unit[i] + yq.unit[i]
+        return ans
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def __div__(x,y):
         cdef Quantity xq = assertQuantity(x)
         cdef Quantity yq = assertQuantity(y)
@@ -579,6 +548,7 @@ cdef class Quantity:
             ans.unit[i] = xq.unit[i] - yq.unit[i]
         return ans
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def __truediv__(x, y):
         cdef Quantity xq = assertQuantity(x)
         cdef Quantity yq = assertQuantity(y)
@@ -592,16 +562,12 @@ cdef class Quantity:
         cdef Quantity xq = assertQuantity(x)
         assert not isQuantity(y), 'The exponent must not be a quantity!'
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude ** y)
-        cdef int i
-        for i from 0 <= i < 7:
-            ans.unit[i] = xq.unit[i] * y
+        copyunits(xq, ans, y)
         return ans
 
     def __neg__(self):
         cdef Quantity ans = Quantity.__new__(Quantity, -self.magnitude)
-        cdef int i
-        for i from 0 <= i < 7:
-            ans.unit[i] = self.unit[i]
+        copyunits(self, ans, 1)
         return ans
 
     def __cmp__(x, y):
@@ -617,6 +583,7 @@ cdef class Quantity:
         else:
             raise Exception('Impossible.')
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def __richcmp__(x, y, int op):
         """
         <   0
@@ -642,6 +609,7 @@ cdef class Quantity:
         elif op == 5:
             return xq.magnitude >= yq.magnitude
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def convert(self, Quantity target_unit):
         assert isQuantity(target_unit), 'Target must be a quantity.'
         sameunits(self, target_unit)
@@ -665,6 +633,7 @@ cdef class Quantity:
         else:
             return ' '.join([number_part, symbol])
 
+    # TODO: CHECK WHAT TO DO FOR NP ARRAY
     def __float__(self):
         assert self.unitCategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
         return self.magnitude
@@ -834,6 +803,21 @@ cdef class QuantityNP:
         self._check_dimensionless()
         return self._get_from_numpy('log1p')
 
+    def sqrt(self):
+        cdef QuantityNP ans = QuantityNP.__new__(QuantityNP, np.sqrt(self.magnitude))
+        copyunits(self, ans, 0.5)
+        return ans
+
+    # def var(self, *args, **kwargs):
+    #     print args
+    #     print kwargs
+    #     res = np.var(self.magnitude, *args, **kwargs)
+    #     if isinstance(self.magnitude, np.ndarray):
+    #         cdef QuantityNP ans = QuantityNP.__new__(QuantityNP, np.var(self.magnitude, *args, **kwargs))
+    #     else:
+    #     copyunits(self, ans, 2)
+    #     return ans
+
     # End numpy functions
 
     def __getitem__(self, val):
@@ -845,7 +829,7 @@ cdef class QuantityNP:
                 ansq.unit[i] = self.unit[i]
             return ansq
         cdef QuantityNP ans = QuantityNP.__new__(QuantityNP, self.magnitude[val])
-        copyunits(self, ans)
+        copyunits(self, ans, 1)
         return ans
 
     cdef inline tuple unit_as_tuple(self):

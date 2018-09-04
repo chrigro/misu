@@ -30,7 +30,7 @@ def test_array():
 
 
 # call timeit
-print('Instantiation: {0:2.3f} ms'.format(1000*timeit.timeit("test_instantiation()", globals=globals(), number=1000)))
-print('Sum: {0:2.3f} ms'.format(1000*timeit.timeit("test_sum(a, b)", globals=globals(), number=1000)))
-print('Numpy array instantiation: {0:2.3f} ms'.format(1000*timeit.timeit("test_array()", globals=globals(), number=1000)))
-print('Numpy array sum: {0:2.3f} ms'.format(1000*timeit.timeit("test_sum(a_arr, b_arr)", globals=globals(), number=1000)))
+print('Instantiation: {0:2.3f} ms'.format(1000*timeit.timeit("test_instantiation()", globals=globals(), number=10000)))
+print('Sum: {0:2.3f} ms'.format(1000*timeit.timeit("test_sum(a, b)", globals=globals(), number=10000)))
+print('Numpy array instantiation: {0:2.3f} ms'.format(1000*timeit.timeit("test_array()", globals=globals(), number=10000)))
+print('Numpy array sum: {0:2.3f} ms'.format(1000*timeit.timeit("test_sum(a_arr, b_arr)", globals=globals(), number=10000)))
