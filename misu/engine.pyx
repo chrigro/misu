@@ -136,14 +136,14 @@ cdef class _UnitRegistry:
         if quantity_name != None:
             self.define(quantity, quantity_name)
 
-    cpdef int defined(self, Quant q):
+    cpdef int defined(self, Quantity q):
         ''' Given a quantity, will return a boolean value indicating
         whether the unit string of the given quantity has been defined
         as a known quantity, like LENGTH or MASS. '''
         cdef tuple unit = q.unit_as_tuple()
         return unit in self._name_by_unit
 
-    cpdef str describe(self, Quant q):
+    cpdef str describe(self, Quantity q):
         ''' If the units of the given quantity have been defined as a
         quantity, the string describing the quantity will be returned here,
         otherwise an exception will be raised. '''
@@ -153,7 +153,7 @@ cdef class _UnitRegistry:
         except:
             raise Exception('The units have not been defined as a quantity.')
 
-    def define(self, Quant q, str quantity_name):
+    def define(self, Quantity q, str quantity_name):
         cdef tuple unit = q.unit_as_tuple()
         if quantity_name != None:
             name = quantity_name.replace(' ', '_').upper()
@@ -220,6 +220,7 @@ cdef class Quantity:
             self._magnitudeNP = magnitude
         self.unit[:] = [0,0,0,0,0,0,0]
 
+    @property
     def magnitude(self):
         if self.mag_is_array == 0:
             return self._magnitude
