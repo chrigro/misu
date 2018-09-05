@@ -345,6 +345,13 @@ cdef class Quantity:
             format_spec = ''
         return self._getmagnitude(), self._getsymbol(), format_spec
 
+    def unitCategory(self):
+        if self.unit_as_tuple() in QuantityType:
+            return QuantityType[self.unit_as_tuple()]
+        else:
+            msg = 'The collection of units: "{}" has not been defined as a category yet.'
+            raise Exception(msg.format(str(self)))
+
     def __str__(self):
         mag, symbol, format_spec = self._getRepresentTuple()
         number_part = format(mag, format_spec)
@@ -356,7 +363,27 @@ cdef class Quantity:
     def __repr__(self):
         return str(self)
 
-    def __add__(x, y):
+    def __format__(self, format_spec):
+        # Ignore the stored format_spec, use the given one.
+        mag, symbol, stored_format_spec = self._getRepresentTuple()
+        if format_spec == '':
+            format_spec = stored_format_spec
+        number_part = format(mag, format_spec)
+        if symbol == '':
+            return number_part
+        else:
+            return ' '.join([number_part, symbol])
+
+    def __float__(self):
+        assert self.unitCategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
+        return self.magnitude
+
+    # Arithmetric for standard python types. 
+    # See https://cython.readthedocs.io/en/latest/src/userguide/special_methods.html
+    # We also call them for numpy operations, see __array_ufunc__ below.
+
+    @staticmethod
+    def _add(x, y):
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
@@ -368,7 +395,11 @@ cdef class Quantity:
         copyunits(xq, ans, 1)
         return ans
 
-    def __sub__(x, y):
+    def __add__(x, y):
+        return Quantity._add(x, y)
+
+    @staticmethod
+    def _sub(x, y):
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
@@ -380,13 +411,11 @@ cdef class Quantity:
         copyunits(xq, ans, 1)
         return ans
 
-    def unpack_or_default(self, other):
-        try:
-            return other.unit
-        except:
-            return _nou
+    def __sub__(x, y):
+        return Quantity._sub(x, y)
 
-    def __mul__(x, y):
+    @staticmethod
+    def _mul(x, y):
         cdef Quantity xq
         cdef Quantity yq
         cdef Quantity ans
@@ -399,7 +428,24 @@ cdef class Quantity:
             ans.unit[i] = xq.unit[i] + yq.unit[i]
         return ans
 
+    def __mul__(x, y):
+        return Quantity._mul(x, y)
+
+    @staticmethod
+    def _div(x,y):
+        cdef Quantity xq = assertQuantity(x)
+        cdef Quantity yq = assertQuantity(y)
+        cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude / yq.magnitude)
+        cdef int i
+        for i from 0 <= i < 7:
+            ans.unit[i] = xq.unit[i] - yq.unit[i]
+        return ans
+
     def __div__(x,y):
+        return Quantity._div(x, y)
+
+    @staticmethod
+    def _truediv(x, y):
         cdef Quantity xq = assertQuantity(x)
         cdef Quantity yq = assertQuantity(y)
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude / yq.magnitude)
@@ -409,46 +455,36 @@ cdef class Quantity:
         return ans
 
     def __truediv__(x, y):
-        cdef Quantity xq = assertQuantity(x)
-        cdef Quantity yq = assertQuantity(y)
-        cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude / yq.magnitude)
-        cdef int i
-        for i from 0 <= i < 7:
-            ans.unit[i] = xq.unit[i] - yq.unit[i]
-        return ans
+        return Quantity._truediv(x, y)
 
-    def __pow__(x, y, z):
+    @staticmethod
+    def _pow(x, y, z):
         cdef Quantity xq = assertQuantity(x)
         assert not isQuantity(y), 'The exponent must not be a quantity!'
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude ** y)
         copyunits(xq, ans, y)
         return ans
 
-    def __neg__(self):
-        cdef Quantity ans = Quantity.__new__(Quantity, -self.magnitude)
-        copyunits(self, ans, 1)
+    def __pow__(x, y, z):
+        return Quantity._pow(x, y, z)
+
+    @staticmethod
+    def _neg(x):
+        cdef Quantity ans = Quantity.__new__(Quantity, -x.magnitude)
+        copyunits(x, ans, 1)
         return ans
 
-    def __cmp__(x, y):
-        cdef Quantity xq = assertQuantity(x)
-        cdef Quantity yq = assertQuantity(y)
-        sameunits(xq, yq)
-        if xq.magnitude < yq.magnitude:
-            return -1
-        elif xq.magnitude == yq.magnitude:
-            return 0
-        elif xq.magnitude > yq.magnitude:
-            return 1
-        else:
-            raise Exception('Impossible.')
+    def __neg__(x):
+        return Quantity._neg(x)
 
-    def __richcmp__(x, y, int op):
+    @staticmethod
+    def _richcmp(x, y, int op):
         """
         <   0
-        ==  2
-        >   4
         <=  1
+        ==  2
         !=  3
+        >   4
         >=  5
         """
         cdef Quantity xq = assertQuantity(x)
@@ -467,39 +503,32 @@ cdef class Quantity:
         elif op == 5:
             return xq.magnitude >= yq.magnitude
 
+    def __richcmp__(x, y, int op):
+        return Quantity._richcmp(x, y, op)
+
+    @staticmethod
+    def _rshift(x, y):
+        return x.convert(y)
+
+    def __rshift__(x, y):
+        """ Use quantity1 >> quantity2 to get the value of quantity1 in quantity2"""
+        return Quantity._rshift(x, y)
+
     def convert(self, Quantity target_unit):
         assert isQuantity(target_unit), 'Target must be a quantity.'
         assert target_unit.mag_is_array == 0, 'Target must be scalar not an array.'
         sameunits(self, target_unit)
         return self.magnitude / target_unit.magnitude
 
-    def unitCategory(self):
-        if self.unit_as_tuple() in QuantityType:
-            return QuantityType[self.unit_as_tuple()]
-        else:
-            msg = 'The collection of units: "{}" has not been defined as a category yet.'
-            raise Exception(msg.format(str(self)))
+    # ------ Implement numpy functionality ------
 
-    def __format__(self, format_spec):
-        # Ignore the stored format_spec, use the given one.
-        mag, symbol, stored_format_spec = self._getRepresentTuple()
-        if format_spec == '':
-            format_spec = stored_format_spec
-        number_part = format(mag, format_spec)
-        if symbol == '':
-            return number_part
-        else:
-            return ' '.join([number_part, symbol])
-
-    def __float__(self):
-        assert self.unitCategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
-        return self.magnitude
-
-    def __rshift__(self, other):
-        return self.convert(other)
+    def copy(self):
+        cdef Quantity ans = Quantity.__new__(Quantity, self.magnitude)
+        copyunits(self, ans, 1)
+        return ans
 
     def __getitem__(self, val):
-        """slicing"""
+        """Slicing for ndarray valued Quantities"""
         if self.mag_is_array == 0:
             raise TypeError("Scalar quantity not subscriptable")
         cdef Quantity ans
@@ -507,7 +536,98 @@ cdef class Quantity:
         copyunits(self, ans, 1)
         return ans
 
-    # ------ Implement some numpy functions ------
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        """Support numpy ufuncs.
+
+        See https://docs.scipy.org/doc/numpy-1.15.0/reference/ufuncs.html#ufuncs
+        and https://github.com/numpy/numpy/blob/v1.15.1/numpy/lib/mixins.py#L63-L183
+
+        """
+
+        # print ufunc.__name__
+        if ufunc.__name__ == 'add':
+            return Quantity._add(*inputs)
+        if ufunc.__name__ == 'subtract':
+            return Quantity._sub(*inputs)
+        if ufunc.__name__ == 'multiply':
+            return Quantity._mul(*inputs)
+        elif ufunc.__name__ == 'true_divide':
+            return Quantity._truediv(*inputs)
+        elif ufunc.__name__ == 'divide':
+            return Quantity._div(*inputs)
+        elif ufunc.__name__ == 'negative':
+            return Quantity._neg(*inputs)
+        elif ufunc.__name__ == 'power':
+            return Quantity._pow(*inputs)
+        elif ufunc.__name__ == 'less':
+            return Quantity._richcmp(*inputs, 0)
+        elif ufunc.__name__ == 'less_equal':
+            return Quantity._richcmp(*inputs, 1)
+        elif ufunc.__name__ == 'equal':
+            return Quantity._richcmp(*inputs, 2)
+        elif ufunc.__name__ == 'not_equal':
+            return Quantity._richcmp(*inputs, 3)
+        elif ufunc.__name__ == 'greater':
+            return Quantity._richcmp(*inputs, 4)
+        elif ufunc.__name__ == 'greater_equal':
+            return Quantity._richcmp(*inputs, 5)
+        elif ufunc.__name__ == 'right_shift':
+            return Quantity._rshift(*inputs)
+        else:
+            return NotImplemented
+
+
+
+
+
+
+
+
+        # out = kwargs.get('out', ())
+        # for x in inputs + out:
+        #     # Only support operations with instances of _HANDLED_TYPES.
+        #     # Use ArrayLike instead of type(self) for isinstance to
+        #     # allow subclasses that don't override __array_ufunc__ to
+        #     # handle ArrayLike objects.
+        #     if not isinstance(x, self._HANDLED_TYPES + (ArrayLike,)):
+        #         return NotImplemented
+        # Defer to the implementation of the ufunc on unwrapped values.
+        # inputs = tuple(x.magnitude if isinstance(x, Quantity) else x
+        #                 for x in inputs)
+        # # if out:
+        # #     kwargs['out'] = tuple(
+        # #         x.value if isinstance(x, ArrayLike) else x
+        # #         for x in out)
+        # result = getattr(ufunc, method)(*inputs, **kwargs)
+        # print ufunc.__name__
+        # return result
+        # if type(result) is tuple:
+        #     # multiple return values
+        #     return tuple(type(self)(x) for x in result)
+        # elif method == 'at':
+        #     # no return value
+        #     return None
+        # else:
+        #     # one return value
+        #     return type(self)(result)
+
+
+
+        # print ufunc
+        # print method
+        # print inputs
+        # print kwargs
+        # if self.mag_is_array == 1:
+        #     return self.magnitude.__array_ufunc__(ufunc, method, *inputs, **kwargs)
+        # else:
+        #     return NotImplemented
+
+    # def __array__(self, dtype = []):
+    #     """Support numpy ufuncs.
+
+    #     see https://docs.scipy.org/doc/numpy-1.14.0/reference/arrays.classes.html
+    #     """
+    #     pass
 
     def _check_dimensionless(self):
             if self.unitCategory() != 'Dimensionless':
@@ -609,10 +729,7 @@ cdef class Quantity:
         self._check_dimensionless()
         return self._get_from_numpy('log1p')
 
-    def copy(self):
-        cdef Quantity ans = Quantity.__new__(Quantity, self.magnitude)
-        copyunits(self, ans, 1)
-        return ans
 
 
 
+# https://docs.scipy.org/doc/numpy/reference/generated/numpy.lib.mixins.NDArrayOperatorsMixin.html#numpy.lib.mixins.NDArrayOperatorsMixin

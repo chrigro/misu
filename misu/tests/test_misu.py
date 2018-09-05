@@ -12,6 +12,8 @@ import pytest
 
 import misu
 
+import pickle
+
 import numpy
 try:
     numpy.set_printoptions(formatter=dict(all=lambda x: '{:.3g}'.format(x)))
@@ -265,11 +267,49 @@ def test_func_decorator2():
 
     assert f(1, 1, 12*u.cm) == 0.12*u.m
 
+def test_pickle():
+    var = 2.5 * u.kg / u.s
+    pick = pickle.dumps(var)
+    res = pickle.loads(pick)
+    assert var==res
 
-def test_numpy_basic():
-    x = np.array([1, 2, 3]) * u.kg
-    assert repr(x) == '[1 2 3] kg'
+def test_pickle_numpy():
+    var = np.array([2.5, 4]) * u.kg / u.s
+    pick = pickle.dumps(var)
+    res = pickle.loads(pick)
+    assert (var[0]==res[0] and var[1]==res[1])
 
+def test_numpy_multiplication():
+    x1 = u.kg * np.array([1, 2, 3])
+    x2 = np.array([1, 2, 3]) * u.s
+    x3 = 5 * u.kg
+    x4 = u.m * 5
+    x5 = x1 * x2
+    x6 = x3 * x4
+    assert repr(x1) == '[1 2 3] kg'
+    assert repr(x2) == '[1 2 3] s'
+    assert repr(x3) == '5 kg'
+    assert repr(x4) == '5 m'
+    assert repr(x5) == '[1 4 9] kg^1.0 s^1.0'
+    assert repr(x6) == '25.0 m^1.0 kg^1.0'
+
+def test_numpy_sum():
+    x1 = 1*u.kg + np.array([1, 2, 3])*u.kg
+    x2 = np.array([1, 2, 3])*u.kg + 1*u.kg
+    x3 = np.array([1, 2, 3])*u.kg + np.array([1, 2, 3])*u.kg
+    assert repr(x1) == '[2 3 4] kg'
+    assert repr(x2) == '[2 3 4] kg'
+    assert repr(x3) == '[2 4 6] kg'
+
+def test_numpy_division():
+    x1 = np.array([1, 2, 3])/(4*u.s)
+    x2 = np.array([1, 2, 3])*u.kg / (2*u.kg)
+    x3 = 1*u.kg / np.array([1, 2, 3])
+    x4 = 1 / np.array([1, 2, 3]) / u.m
+    assert repr(x1) == '[0.25 0.5 0.75] Hz'
+    assert repr(x2) == '[0.5 1 1.5]'
+    assert repr(x3) == '[1 0.5 0.333] kg'
+    assert repr(x4) == '[1 0.5 0.333] m^-1.0'
 
 def test_numpy_operations():
     x = np.array([1, 2, 3]) * u.kg
@@ -299,3 +339,12 @@ def test_numpy_slice():
     assert repr(x[:2]) == '[0.084 0.199] kg/hr'
     assert repr(x[3]) == '0.1187 kg/hr'
 
+def test_numpy_sin():
+    mags = np.array([ 0.08400557, 0.19897197, 0.12407021, 0.11867142])
+    x = mags * u.kN
+    assert np.allclose(np.sin(mags) , np.sin(x/u.kN))
+    assert np.allclose(np.sin(mags), np.sin(x >> u.kN))
+
+
+if __name__ == '__main__':
+    test_numpy_division()
