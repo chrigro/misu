@@ -11,8 +11,6 @@ import numpy as np
 cimport numpy as np
 from cpython.array cimport array, copy
 
-from libc.string cimport strcmp
-
 
 class EIncompatibleUnits(Exception):
     pass
@@ -378,7 +376,7 @@ cdef class Quantity:
         assert self.unitCategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
         return self.magnitude
 
-    # Arithmetric for standard python types. 
+    # Arithmetric for standard python types.
     # See https://cython.readthedocs.io/en/latest/src/userguide/special_methods.html
     # We also call them for numpy operations, see __array_ufunc__ below.
 
@@ -478,6 +476,15 @@ cdef class Quantity:
         return Quantity._neg(x)
 
     @staticmethod
+    def _pos(x):
+        cdef Quantity ans = Quantity.__new__(Quantity, x.magnitude)
+        copyunits(x, ans, 1)
+        return ans
+
+    def __pos__(x):
+        return Quantity._pos(x)
+
+    @staticmethod
     def _richcmp(x, y, int op):
         """
         <   0
@@ -506,6 +513,12 @@ cdef class Quantity:
     def __richcmp__(x, y, int op):
         return Quantity._richcmp(x, y, op)
 
+    def __abs__(x):
+        """Numpy abs is different"""
+        cdef Quantity ans = Quantity.__new__(Quantity, abs(x.magnitude))
+        copyunits(x, ans, 1)
+        return ans
+
     @staticmethod
     def _rshift(x, y):
         return x.convert(y)
@@ -519,6 +532,11 @@ cdef class Quantity:
         assert target_unit.mag_is_array == 0, 'Target must be scalar not an array.'
         sameunits(self, target_unit)
         return self.magnitude / target_unit.magnitude
+
+    @staticmethod
+    def _check_dimensionless(x):
+        if x.unitCategory() != 'Dimensionless':
+            raise EIncompatibleUnits('Argument must be dimensionless.')
 
     # ------ Implement numpy functionality ------
 
@@ -544,7 +562,11 @@ cdef class Quantity:
 
         """
 
-        # print ufunc.__name__
+        trigonometric_ufuncs = ( 'sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan',
+                'sinh', 'cosh', 'tanh', 'arcsinh', 'arccosh',
+                'arctanh', 'deg2rad', 'rad2deg')
+
+        print ufunc.__name__
         if ufunc.__name__ == 'add':
             return Quantity._add(*inputs)
         if ufunc.__name__ == 'subtract':
@@ -557,6 +579,8 @@ cdef class Quantity:
             return Quantity._div(*inputs)
         elif ufunc.__name__ == 'negative':
             return Quantity._neg(*inputs)
+        elif ufunc.__name__ == 'positive':
+            return Quantity._pos(*inputs)
         elif ufunc.__name__ == 'power':
             return Quantity._pow(*inputs)
         elif ufunc.__name__ == 'less':
@@ -573,10 +597,11 @@ cdef class Quantity:
             return Quantity._richcmp(*inputs, 5)
         elif ufunc.__name__ == 'right_shift':
             return Quantity._rshift(*inputs)
+        elif ufunc.__name__ in trigonometric_ufuncs:
+            Quantity._check_dimensionless(inputs[0])
+            return getattr(ufunc, method)(inputs[0].magnitude, **kwargs)
         else:
             return NotImplemented
-
-
 
 
 
@@ -628,106 +653,6 @@ cdef class Quantity:
     #     see https://docs.scipy.org/doc/numpy-1.14.0/reference/arrays.classes.html
     #     """
     #     pass
-
-    def _check_dimensionless(self):
-            if self.unitCategory() != 'Dimensionless':
-                raise EIncompatibleUnits('Argument must be dimensionless.')
-
-    def _get_from_numpy(self, name):
-        cdef Quantity out = Quantity.__new__(Quantity, getattr(np, name)(self.magnitude))
-        return out
-
-    def sin(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('sin')
-
-    def cos(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('cos')
-
-    def tan(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('tan')
-
-    def arcsin(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arcsin')
-
-    def arccos(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arccos')
-
-    def arctan(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arctan')
-
-    def degrees(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('degrees')
-
-    def radians(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('radians')
-
-    def deg2rad(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('deg2rad')
-
-    def rad2deg(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('rad2deg')
-
-    def sinh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('sinh')
-
-    def cosh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('cosh')
-
-    def tanh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('tanh')
-
-    def arcsinh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arcsinh')
-
-    def arccosh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arccosh')
-
-    def arctanh(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('arctanh')
-
-    def exp(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('exp')
-
-    def expm1(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('expm1')
-
-    def exp2(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('exp2')
-
-    def log(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('log')
-
-    def log10(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('log10')
-
-    def log2(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('log2')
-
-    def log1p(self):
-        self._check_dimensionless()
-        return self._get_from_numpy('log1p')
 
 
 
