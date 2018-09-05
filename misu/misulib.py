@@ -35,7 +35,7 @@ class UnitNamespace(object):
         """
         # dimensionless is special
         self.dimensionless = engine.Quantity(1.0)
-        engine.addType(self.dimensionless, "Dimensionless")
+        engine.addtype(self.dimensionless, "Dimensionless")
         self.known_units = ["dimensionless"]
 
         # meter
@@ -183,7 +183,7 @@ class UnitNamespace(object):
         if not unit_category == "":
             # print("Adding type {} to category {}".format(quantity.units(), unit_category))
             try:
-                engine.addType(quantity, str(unit_category))
+                engine.addtype(quantity, str(unit_category))
             except ESignatureAlreadyRegistered as e:
                 print(
                     "WARNING: Can not resister {} for unit category {}: {}".format(
@@ -193,7 +193,7 @@ class UnitNamespace(object):
         # Set representative symbol
         if not representative_symbol == "":
             self._check_represent(representative_symbol, symbols)
-            quantity.setRepresent(as_unit=quantity, symbol=representative_symbol)
+            quantity.setrepresent(as_unit=quantity, symbol=representative_symbol)
         # Metric prefixes
         if not create_metric_prefixes_for == []:
             self._check_metric_prefix_request(create_metric_prefixes_for, symbols)
@@ -572,9 +572,9 @@ if __name__ == "__main__":
 
     tt = 4 * R
     print(tt)
-    tt.setRepresent(R, "R")
+    tt.setrepresent(R, "R")
     print(4 * R)
-    tt.setRepresent(K, "K")
+    tt.setrepresent(K, "K")
     print(4 * R)
 
     k_val_from_c(5)
@@ -593,13 +593,13 @@ if __name__ == "__main__":
 
     # information on units
     aa = u.ng
-    print(aa.unitCategory())
+    print(aa.unitcategory())
     print(aa.units())
-    print(aa.unitString())
+    print(aa.unitstring())
 
-    # test a more complex setRepresent
+    # test a more complex setrepresent
     bb = 1e-18 * u.J
     print(bb)
     # report energies in Hz
-    bb.setRepresent(symbol='Hz', convert_function=lambda q, mag: mag/6.62607004e-34 )
+    bb.setrepresent(symbol='Hz', convert_function=lambda q, mag: mag/6.62607004e-34 )
     print(bb)

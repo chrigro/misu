@@ -23,7 +23,7 @@ class ESignatureAlreadyRegistered(Exception):
 cdef class Quantity
 
 
-cdef inline int isQuantity(var):
+cdef inline int isquantity(var):
     ''' Checks whether var is an instance of type 'Quantity'.
     Returns True or False.'''
     return isinstance(var, Quantity)
@@ -40,18 +40,18 @@ cdef inline void copyunits(Quantity source, Quantity dest, float power):
         dest.unit[i] = source.unit[i] * power
 
 
-QuantityType = {}
-cpdef addType(Quantity q, str name):
-    if q.unit_as_tuple() in QuantityType:
+QUANTITYTYPE = {}
+cpdef addtype(Quantity q, str name):
+    if q.unit_as_tuple() in QUANTITYTYPE:
         raise ESignatureAlreadyRegistered('The unit {} already registered, owned by: {}'.format(
-            str(q.unitString()), QuantityType[q.unit_as_tuple()]))
-    QuantityType[q.unit_as_tuple()] = name
+            str(q.unitstring()), QUANTITYTYPE[q.unit_as_tuple()]))
+    QUANTITYTYPE[q.unit_as_tuple()] = name
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cdef inline Quantity assertQuantity(x):
-    if isQuantity(x):
+cdef inline Quantity assertquantity(x):
+    if isquantity(x):
         return x
     else:
         return Quantity.__new__(Quantity, x)
@@ -176,15 +176,15 @@ cdef class _UnitRegistry:
             raise Exception('Quantity type "{}" not defined.'.format(name))
 
 
-RepresentCache = {}
+REPRESENTCACHE = {}
 
 
 # The unit registry is a lookup list where you can find a specific
 # UnitDefinition from a particular symbol.  Note that multiple entries
-# in the UnitRegistry can point to the same unit definition, because
+# in the UNITREGISTRY can point to the same unit definition, because
 # there can be many synonyms for a particular unit, e.g.
 # s, sec, secs, seconds
-UnitRegistry = {}
+UNITREGISTRY = {}
 class UnitDefinition(object):
     def __init__(self, symbols, quantity, notes):
         self.symbols = [s.strip() for s in symbols.strip().split(' ') if s.strip() != '']
@@ -192,10 +192,10 @@ class UnitDefinition(object):
         self.notes = notes
         for s in self.symbols:
             try:
-                UnitRegistry[s] = self
+                UNITREGISTRY[s] = self
                 exec('global {s}; {s} = quantity'.format(s=s))
             except:
-                print 'Error create UnitRegistry entry for symbol: {}'.format(s)
+                print 'Error create UNITREGISTRY entry for symbol: {}'.format(s)
 
 
 cdef array _nou  = array('d', [0,0,0,0,0,0,0])
@@ -258,11 +258,7 @@ cdef class Quantity:
         for i from 0 <= i < 7:
             self.unit[i] = unit[i]
 
-    def selfPrint(self):
-        dict_contents = ','.join(['{}={}'.format(s,v) for s,v in dict(zip(symbols, self.units())).iteritems() if v != 0.0])
-        return 'Quantity({}, dict({}))'.format(self.magnitude, dict_contents)
-
-    def setRepresent(self, as_unit=None, symbol='',
+    def setrepresent(self, as_unit=None, symbol='',
         convert_function=None, format_spec='.4g'):
         '''By default, the target representation is arrived by dividing
         the current unit MAGNITUDE by the target unit MAGNITUDE, and
@@ -289,7 +285,7 @@ cdef class Quantity:
             def proportional_conversion(instance, _):
                 return instance.convert(as_unit)
             convert_function = proportional_conversion
-        RepresentCache[self.unit_as_tuple()] = dict(
+        REPRESENTCACHE[self.unit_as_tuple()] = dict(
             convert_function=convert_function,
             symbol=symbol,
             format_spec=format_spec)
@@ -307,9 +303,9 @@ cdef class Quantity:
         else:
             raise Exception("Only available for scalar Quantities.")
 
-    def unitString(self):
-        if self.unit_as_tuple() in RepresentCache:
-            r = RepresentCache[self.unit_as_tuple()]
+    def unitstring(self):
+        if self.unit_as_tuple() in REPRESENTCACHE:
+            r = REPRESENTCACHE[self.unit_as_tuple()]
             ret = '{}'.format(r['symbol'])
             return ret
         else:
@@ -318,23 +314,23 @@ cdef class Quantity:
             return ret
 
     def _getmagnitude(self):
-        if self.unit_as_tuple() in RepresentCache:
-            r = RepresentCache[self.unit_as_tuple()]
+        if self.unit_as_tuple() in REPRESENTCACHE:
+            r = REPRESENTCACHE[self.unit_as_tuple()]
             return r['convert_function'](self, self.magnitude)
 
         else:
             return self.magnitude
 
     def _getsymbol(self):
-        if self.unit_as_tuple() in RepresentCache:
-            r = RepresentCache[self.unit_as_tuple()]
+        if self.unit_as_tuple() in REPRESENTCACHE:
+            r = REPRESENTCACHE[self.unit_as_tuple()]
             return r['symbol']
         else:
-            return self.unitString()
+            return self.unitstring()
 
-    def _getRepresentTuple(self):
-        if self.unit_as_tuple() in RepresentCache:
-            r = RepresentCache[self.unit_as_tuple()]
+    def _getrepresenttuple(self):
+        if self.unit_as_tuple() in REPRESENTCACHE:
+            r = REPRESENTCACHE[self.unit_as_tuple()]
             format_spec = r['format_spec']
         else:
             format_spec = ''
@@ -343,15 +339,15 @@ cdef class Quantity:
             format_spec = ''
         return self._getmagnitude(), self._getsymbol(), format_spec
 
-    def unitCategory(self):
-        if self.unit_as_tuple() in QuantityType:
-            return QuantityType[self.unit_as_tuple()]
+    def unitcategory(self):
+        if self.unit_as_tuple() in QUANTITYTYPE:
+            return QUANTITYTYPE[self.unit_as_tuple()]
         else:
             msg = 'The collection of units: "{}" has not been defined as a category yet.'
             raise Exception(msg.format(str(self)))
 
     def __str__(self):
-        mag, symbol, format_spec = self._getRepresentTuple()
+        mag, symbol, format_spec = self._getrepresenttuple()
         number_part = format(mag, format_spec)
         if symbol == '':
             return number_part
@@ -363,7 +359,7 @@ cdef class Quantity:
 
     def __format__(self, format_spec):
         # Ignore the stored format_spec, use the given one.
-        mag, symbol, stored_format_spec = self._getRepresentTuple()
+        mag, symbol, stored_format_spec = self._getrepresenttuple()
         if format_spec == '':
             format_spec = stored_format_spec
         number_part = format(mag, format_spec)
@@ -373,7 +369,7 @@ cdef class Quantity:
             return ' '.join([number_part, symbol])
 
     def __float__(self):
-        assert self.unitCategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
+        assert self.unitcategory() == 'Dimensionless', 'Must be dimensionless for __float__()'
         return self.magnitude
 
     # Arithmetric for standard python types.
@@ -386,8 +382,8 @@ cdef class Quantity:
         cdef Quantity yq
         cdef Quantity ans
 
-        xq = assertQuantity(x)
-        yq = assertQuantity(y)
+        xq = assertquantity(x)
+        yq = assertquantity(y)
         ans = Quantity.__new__(Quantity, xq.magnitude + yq.magnitude)
         sameunits(xq, yq)
         copyunits(xq, ans, 1)
@@ -402,8 +398,8 @@ cdef class Quantity:
         cdef Quantity yq
         cdef Quantity ans
 
-        xq = assertQuantity(x)
-        yq = assertQuantity(y)
+        xq = assertquantity(x)
+        yq = assertquantity(y)
         ans = Quantity.__new__(Quantity, xq.magnitude - yq.magnitude)
         sameunits(xq, yq)
         copyunits(xq, ans, 1)
@@ -419,8 +415,8 @@ cdef class Quantity:
         cdef Quantity ans
         cdef int i
 
-        xq = assertQuantity(x)
-        yq = assertQuantity(y)
+        xq = assertquantity(x)
+        yq = assertquantity(y)
         ans = Quantity.__new__(Quantity, xq.magnitude * yq.magnitude)
         for i from 0 <= i < 7:
             ans.unit[i] = xq.unit[i] + yq.unit[i]
@@ -431,8 +427,8 @@ cdef class Quantity:
 
     @staticmethod
     def _div(x,y):
-        cdef Quantity xq = assertQuantity(x)
-        cdef Quantity yq = assertQuantity(y)
+        cdef Quantity xq = assertquantity(x)
+        cdef Quantity yq = assertquantity(y)
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude / yq.magnitude)
         cdef int i
         for i from 0 <= i < 7:
@@ -444,8 +440,8 @@ cdef class Quantity:
 
     @staticmethod
     def _truediv(x, y):
-        cdef Quantity xq = assertQuantity(x)
-        cdef Quantity yq = assertQuantity(y)
+        cdef Quantity xq = assertquantity(x)
+        cdef Quantity yq = assertquantity(y)
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude / yq.magnitude)
         cdef int i
         for i from 0 <= i < 7:
@@ -457,8 +453,8 @@ cdef class Quantity:
 
     @staticmethod
     def _pow(x, y, z):
-        cdef Quantity xq = assertQuantity(x)
-        assert not isQuantity(y), 'The exponent must not be a quantity!'
+        cdef Quantity xq = assertquantity(x)
+        assert not isquantity(y), 'The exponent must not be a quantity!'
         cdef Quantity ans = Quantity.__new__(Quantity, xq.magnitude ** y)
         copyunits(xq, ans, y)
         return ans
@@ -494,8 +490,8 @@ cdef class Quantity:
         >   4
         >=  5
         """
-        cdef Quantity xq = assertQuantity(x)
-        cdef Quantity yq = assertQuantity(y)
+        cdef Quantity xq = assertquantity(x)
+        cdef Quantity yq = assertquantity(y)
         sameunits(xq, yq)
         if op == 0:
             return xq.magnitude < yq.magnitude
@@ -528,14 +524,14 @@ cdef class Quantity:
         return Quantity._rshift(x, y)
 
     def convert(self, Quantity target_unit):
-        assert isQuantity(target_unit), 'Target must be a quantity.'
+        assert isquantity(target_unit), 'Target must be a quantity.'
         assert target_unit.mag_is_array == 0, 'Target must be scalar not an array.'
         sameunits(self, target_unit)
         return self.magnitude / target_unit.magnitude
 
     @staticmethod
     def _check_dimensionless(x):
-        if x.unitCategory() != 'Dimensionless':
+        if x.unitcategory() != 'Dimensionless':
             raise EIncompatibleUnits('Argument must be dimensionless.')
 
     # ------ Implement numpy functionality ------

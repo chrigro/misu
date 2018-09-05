@@ -66,7 +66,7 @@ print P.convert(bar)
 
 # Perhaps we want to always have pressures reported in MPa (megapascals):
 
-P.setRepresent(MPa, 'MPa')
+P.setrepresent(MPa, 'MPa')
 print P
 
 # This changes the presentation of *all* pressures:
@@ -85,7 +85,7 @@ print my_length.convert(mm)
 
 temp = 273.15 * K
 print temp
-temp.setRepresent(convert_function=lambda _, mag: mag - 273.15, symbol='C')
+temp.setrepresent(convert_function=lambda _, mag: mag - 273.15, symbol='C')
 print temp
 temp = temp + 100*K
 print temp
@@ -100,7 +100,7 @@ temp = 100*K+100*R
 print temp
 
 # We could changed the representation to something else:
-temp.setRepresent(convert_function=lambda _, mag: (mag - 273.15)*9./5.+32, symbol='F')
+temp.setrepresent(convert_function=lambda _, mag: (mag - 273.15)*9./5.+32, symbol='F')
 print temp
 # We know that -40F == -40C so...
 temp = 273.15*K - 40*K
@@ -110,10 +110,10 @@ print temp
 
 energy = 100*J
 print 'energy = {}'.format(energy)
-energy.setRepresent(as_unit=J, symbol='J')
+energy.setrepresent(as_unit=J, symbol='J')
 print 'energy = {}'.format(energy)
 # Format strings also work correctly.
-energy.setRepresent(BTU, 'BTU')
+energy.setrepresent(BTU, 'BTU')
 print '{:.3e}'.format(energy)
 
 # It is easy to examine the details:

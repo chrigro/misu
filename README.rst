@@ -211,7 +211,7 @@ Features
 -  You can specify a *reporting unit* for a dimension, meaning that you
    could have all lengths be reported in "feet" by default for example. You can
    specify a *reporting format* for a particular unit. This is realized by
-   using the `Quantity.setRepresent` method. Its `convert_function` argument
+   using the `Quantity.setrepresent` method. Its `convert_function` argument
    even allows you to report in another unit category, for example,
    automatically report all energies in Hz (by dividing by Planck's constant.)
 -  As ``misu`` does not support quantities that have an offset wrt. SI units

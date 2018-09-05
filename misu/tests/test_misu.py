@@ -26,8 +26,8 @@ const = misu.PhysConst(u)
 a = 2.5 * u.kg / u.s
 b = 34.67 * u.kg / u.s
 
-a.setRepresent(u.kg/u.hr, 'kg/hr')
-b.setRepresent(u.kg/u.hr, 'kg/hr')
+a.setrepresent(u.kg/u.hr, 'kg/hr')
+b.setrepresent(u.kg/u.hr, 'kg/hr')
 
 def lookup_type(quantity):
     return 'Quantity: {} Type: {}'.format(quantity, quantity.unitCategory())
@@ -228,8 +228,8 @@ def test_func_decorator1():
 
     # Test the pressure drop
     flow = 1*u.m3/u.s
-    u.m.setRepresent(as_unit=u.inch, symbol='"')
-    u.Pa.setRepresent(as_unit=u.bar, symbol='bar')
+    u.m.setrepresent(as_unit=u.inch, symbol='"')
+    u.Pa.setrepresent(as_unit=u.bar, symbol='bar')
     lines = []
     for D in [x*u.inch for x in range(1, 11)]:
         v = flow / D**2 / math.pi * 4
@@ -247,7 +247,7 @@ def test_func_decorator1():
 
 def test_func_decorator2():
     # Working only in m
-    u.m.setRepresent(as_unit=u.m, symbol='m')
+    u.m.setrepresent(as_unit=u.m, symbol='m')
 
     @misu.dimensions(x='Length')
     def f(x, y, z):
