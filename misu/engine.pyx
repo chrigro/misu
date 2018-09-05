@@ -240,17 +240,10 @@ cdef class Quantity:
     cdef inline tuple unit_as_tuple(self):
         return tuple(self.units())
 
-    def setValDict(self, dict valdict):
+    def setunitdict(self, dict valdict):
         cdef int i
         cdef list values
         values = [valdict.get(s) or 0 for s in symbols]
-        for i from 0 <= i < 7:
-            self.unit[i] = values[i]
-
-    def setValDict2(self, **kwargs):
-        cdef int i
-        cdef list values
-        values = [kwargs.get(s) or 0 for s in symbols]
         for i from 0 <= i < 7:
             self.unit[i] = values[i]
 

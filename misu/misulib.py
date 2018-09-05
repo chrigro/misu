@@ -171,7 +171,7 @@ class UnitNamespace(object):
         """
         # First define the quantity based on si
         quantity = engine.Quantity(scale_factor)
-        quantity.setValDict(sidict)
+        quantity.setunitdict(sidict)
         # Add to registry and namespace
         for symbol in symbols:
             symbol = symbol.strip()
@@ -310,7 +310,7 @@ class UnitNamespace(object):
         """Get the magnitude of quant when expressed in si units."""
         sidict = self._get_si_dict(quant)
         si_quant = engine.Quantity(1)
-        si_quant.setValDict(sidict)
+        si_quant.setunitdict(sidict)
         res = quant.convert(si_quant)
         return res
 
