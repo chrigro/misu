@@ -505,6 +505,15 @@ cdef class Quantity:
     def __rshift__(self, other):
         return self.convert(other)
 
+    def __getitem__(self, val):
+        """slicing"""
+        if self.mag_is_array == 0:
+            raise TypeError("Scalar quantity not subscriptable")
+        cdef Quantity ans
+        ans = Quantity.__new__(Quantity, self.magnitude[val])
+        copyunits(self, ans, 1)
+        return ans
+
     # ------ Implement some numpy functions ------
 
     def _check_dimensionless(self):

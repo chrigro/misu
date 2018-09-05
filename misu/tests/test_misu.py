@@ -24,12 +24,15 @@ const = misu.PhysConst(u)
 a = 2.5 * u.kg / u.s
 b = 34.67 * u.kg / u.s
 
+a.setRepresent(u.kg/u.hr, 'kg/hr')
+b.setRepresent(u.kg/u.hr, 'kg/hr')
 
 def lookup_type(quantity):
     return 'Quantity: {} Type: {}'.format(quantity, quantity.unitCategory())
 
 
 def test_representation():
+    print(repr(a))
     assert repr(a) == '9000 kg/hr'
     assert repr(b) == '1.248e+05 kg/hr'
 
@@ -51,11 +54,11 @@ def test_format_right_align():
 
 
 def test_from_string1():
-    u.quantity_from_string('1 m^2 s^-1') == 1 * u.m**2/s
+    u.quantity_from_string('1 m^2 s^-1') == 1 * u.m**2/u.s
 
 
 def test_from_string2():
-    u.quantity_from_string('1 m^2     s^-1') == 1 * u.m**2/s
+    u.quantity_from_string('1 m^2     s^-1') == 1 * u.m**2/u.s
 
 
 def test_from_string3():
@@ -97,7 +100,7 @@ def test_comparison_equal():
     assert 3*u.m == 3*u.m
 
 def test_incompatible_units():
-    with pytest.raises(u.EIncompatibleUnits) as E:
+    with pytest.raises(misu.EIncompatibleUnits) as E:
         x = 2.0*u.m + 3.0*u.kg
     print(str(E.value))
     assert str(E.value) == 'Incompatible units: 2 m and 3 kg'
@@ -138,7 +141,7 @@ def test_func_decorator1():
     a standard dimensionless number in process engineering."""
 
     # Function definition
-    @dimensions(rho='Mass density', v='Velocity', L='Length',
+    @misu.dimensions(rho='Mass density', v='Velocity', L='Length',
                 mu='Dynamic viscosity')
     def Reynolds_number(rho, v, L, mu):
         return rho * v * L / mu
@@ -164,7 +167,7 @@ def test_func_decorator1():
     # The Colebrook equation requires iteration, but there
     # are various approximations to the Colebrook equation
     # that do not require iteration, like Haaland below.
-    @dimensions(roughness='Length', Dh='Length', Re='Dimensionless')
+    @misu.dimensions(roughness='Length', Dh='Length', Re='Dimensionless')
     def friction_factor_Colebrook(roughness, Dh, Re):
         '''Returns friction factor.
         http://hal.archives-ouvertes.fr/docs/00/33/56/55/PDF/fast_colebrook.pdf
@@ -183,12 +186,12 @@ def test_func_decorator1():
 
         return (l / 2.0 / zj)**2
 
-    @dimensions(roughness='Length', Dh='Length', Re='Dimensionless')
+    @misu.dimensions(roughness='Length', Dh='Length', Re='Dimensionless')
     def friction_factor_Colebrook_Haaland(roughness, Dh, Re):
         K = roughness.convert(u.m) / Dh.convert(u.m)
         tmp = math.pow(K/3.7, 1.11) + 6.9 / Re
         inv = -1.8 * math.log10(tmp)
-        return dimensionless * (1./inv)**2
+        return u.dimensionless * (1./inv)**2
 
     f = friction_factor_Colebrook(1e-6*u.m, 1.5*u.inch, Re)
     fH = friction_factor_Colebrook_Haaland(1e-6*u.m, 1.5*u.inch, Re)
@@ -205,7 +208,7 @@ def test_func_decorator1():
     # The friction factor can then be used to calculate the
     # expected drop in pressure produced by flow through a
     # pipe.
-    @dimensions(
+    @misu.dimensions(
         fD='Dimensionless',
         D='Length',
         rho='Mass density',
@@ -223,10 +226,10 @@ def test_func_decorator1():
 
     # Test the pressure drop
     flow = 1*u.m3/u.s
-    m.setRepresent(as_unit=u.inch, symbol='"')
-    Pa.setRepresent(as_unit=u.bar, symbol='bar')
+    u.m.setRepresent(as_unit=u.inch, symbol='"')
+    u.Pa.setRepresent(as_unit=u.bar, symbol='bar')
     lines = []
-    for D in [x*inch for x in range(1, 11)]:
+    for D in [x*u.inch for x in range(1, 11)]:
         v = flow / D**2 / math.pi * 4
         rho = 1000*u.kg/u.m3
         Re = Reynolds_number(rho=rho, v=v, L=D, mu=1e-3*u.Pa*u.s)
@@ -242,21 +245,21 @@ def test_func_decorator1():
 
 def test_func_decorator2():
     # Working only in m
-    m.setRepresent(as_unit=u.m, symbol='m')
+    u.m.setRepresent(as_unit=u.m, symbol='m')
 
-    @dimensions(x='Length')
+    @misu.dimensions(x='Length')
     def f(x, y, z):
         return x*y*z
 
     assert f(12*u.cm, 1, 1) == 0.12*u.m
 
-    @dimensions(y='Length')
+    @misu.dimensions(y='Length')
     def f(x, y, z):
         return x*y*z
 
     assert f(1, 12*u.cm, 1) == 0.12*u.m
 
-    @dimensions(z='Length')
+    @misu.dimensions(z='Length')
     def f(x, y, z):
         return x*y*z
 
@@ -295,3 +298,4 @@ def test_numpy_slice():
     x = np.array([ 0.08400557, 0.19897197, 0.12407021, 0.11867142]) * u.kg/u.hr
     assert repr(x[:2]) == '[0.084 0.199] kg/hr'
     assert repr(x[3]) == '0.1187 kg/hr'
+
