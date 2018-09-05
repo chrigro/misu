@@ -14,7 +14,7 @@ from misu import (
     kg, s, lb, minute, Hz, kHz, GHz, MHz, ft, BTU, MW, d, m3, inch, Pa, bar,
     cm, minutes, hr, m, dimensionless
 )
-from misu import EIncompatibleUnits, dimensions, QuantityNP, quantity_from_string
+from misu import EIncompatibleUnits, dimensions
 
 import numpy
 try:
@@ -278,12 +278,6 @@ def test_numpy_operations():
     assert repr(y) == '[3 6 9] kg/hr'
     assert repr(y**2) \
         == '[6.94e-07 2.78e-06 6.25e-06] kg^2.0 s^-2.0'
-
-
-def test_npclass():
-    x = np.array([1.0, 2.0, 3.0])
-    y = QuantityNP(x) * kg
-    assert repr(y) == '[1 2 3] kg'
 
 
 def test_numpy_addition():

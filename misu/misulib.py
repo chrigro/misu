@@ -10,7 +10,7 @@ import os.path as osp
 from misu.siprefixes import siprefixes_sym
 
 import misu.engine as engine
-from misu.engine import Quantity, QuantityNP, ESignatureAlreadyRegistered
+from misu.engine import Quantity, ESignatureAlreadyRegistered
 
 
 class UnitNamespace(object):
@@ -398,10 +398,10 @@ def noquantity(func):
     def wrapper(*args, **kwargs):
         # call the wrapped function
         for arg in args:
-            if isinstance(arg, (Quantity, QuantityNP)):
+            if isinstance(arg, Quantity):
                 raise TypeError("Quantity arguments not allowed.")
         for arg in kwargs.values():
-            if isinstance(arg, (Quantity, QuantityNP)):
+            if isinstance(arg, Quantity):
                 raise TypeError("Quantity arguments not allowed.")
         res = func(*args, **kwargs)
         return res

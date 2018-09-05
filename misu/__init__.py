@@ -4,7 +4,6 @@ from misu.misulib import UnitNamespace, units_to_this_ns
 # core from the engine
 from misu.engine import (
     Quantity,
-    QuantityNP,
     EIncompatibleUnits,
     ESignatureAlreadyRegistered,
 )

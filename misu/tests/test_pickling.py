@@ -14,7 +14,7 @@ from misu import (
     kg, s, lb, minute, Hz, kHz, GHz, MHz, ft, BTU, MW, d, m3, inch, Pa, bar,
     cm, minutes, hr, m, dimensionless
 )
-from misu import EIncompatibleUnits, dimensions, QuantityNP, quantity_from_string
+from misu import EIncompatibleUnits, dimensions, quantity_from_string
 
 import numpy
 try:

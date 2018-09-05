@@ -14,7 +14,7 @@ from misu import (
     kg, s, lb, minute, Hz, kHz, GHz, MHz, ft, BTU, MW, d, m3, inch, Pa, bar,
     cm, minutes, hr, m, dimensionless
 )
-from misu import EIncompatibleUnits, dimensions, QuantityNP, Quantity, quantity_from_string
+from misu import EIncompatibleUnits, dimensions, Quantity, quantity_from_string
 
 import numpy
 try:
@@ -34,9 +34,6 @@ b_m = 3
 b = b_m*m
 c_m = 1
 c = c_m*m
-
-def test_type_1():
-    assert type(np.sin(a/b)) == QuantityNP
 
 def test_type_2():
     assert type(np.sin(b/c)) == Quantity
