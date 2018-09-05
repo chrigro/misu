@@ -141,7 +141,7 @@ class UnitNamespace(object):
         ----------
         symbols : list of unit symbols
             These will be put into the class namespace, and will be entered as keys in
-            the global UnitRegistry.
+            the global UNITREGISTRY.
 
         sidict : dict
             Dictionary with base SI units as keys and the exponent as value.
@@ -201,7 +201,7 @@ class UnitNamespace(object):
                 self.create_metric_prefixes(symbol, quantity, metric_skip_function)
 
     def create_metric_prefixes(self, symbol, quantity, skipfunction=None):
-        """ Populates the UnitRegistry and the namespace with all the
+        """ Populates the UNITREGISTRY and the namespace with all the
         SI-prefixed versions of the given symbol.
 
         """
@@ -242,11 +242,11 @@ class UnitNamespace(object):
         self.known_units.append(symb)
 
     def _add_to_registry(self, symbol, quantity):
-        """Add symbol representing Quantity to the UnitRegistry.
+        """Add symbol representing Quantity to the UNITREGISTRY.
 
         """
-        if symbol not in engine.UnitRegistry.keys():
-            engine.UnitRegistry[symbol] = quantity
+        if symbol not in engine.UNITREGISTRY.keys():
+            engine.UNITREGISTRY[symbol] = quantity
         else:
             raise ValueError(
                 "Unit symbol {s} already present in the registry.".format(s=symbol)
@@ -503,7 +503,7 @@ def dimensions(**_params_):
                     name, category
                 )
                 assert (
-                    param.unitCategory() == category
+                    param.unitcategory() == category
                 ), 'Parameter "{}" must be unit type "{}".'.format(
                     name, category
                 )

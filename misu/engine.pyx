@@ -29,9 +29,6 @@ cdef inline int isquantity(var):
     return isinstance(var, Quantity)
 
 
-ctypedef double[7] uarray
-
-
 cdef inline void copyunits(Quantity source, Quantity dest, float power):
     ''' Cython limitations require that both source and dest are the same
     type. '''
@@ -57,6 +54,9 @@ cdef inline Quantity assertquantity(x):
         return Quantity.__new__(Quantity, x)
 
 
+ctypedef double[7] uarray
+
+
 cdef list symbols = ['m', 'kg', 's', 'A', 'K', 'cd', 'mol']
 
 
@@ -68,116 +68,7 @@ cdef inline sameunits(Quantity self, Quantity other):
                 'Incompatible units: {} and {}'.format(self, other))
 
 
-cdef inline sameunitsp(double self[7], double other[7]):
-    cdef int i
-    for i from 0 <= i < 7:
-        if self[i] != other[i]:
-            raise EIncompatibleUnits('Incompatible units: TODO')
-
-
-cdef class _UnitRegistry:
-    cdef dict _representation_cache
-    cdef dict _symbol_cache
-
-    # For defined quantities, e.g. LENGTH, MASS etc.
-    cdef dict _unit_by_name # A name can mean only one unit
-    cdef dict _name_by_unit # One unit type can have multiple names, so the
-                            # values are lists.
-
-    def __cinit__(self):
-        self._symbol_cache = {}
-        self._inverse_symbol_cache = {} # This one is keyed by quantity, with
-        self._representation_cache = {} # ... a list of symbols as value.
-        self._unit_by_name = {}
-        self._name_by_unit = {}
-
-    def add(self, str symbols, Quantity quantity, str quantity_name = None):
-        if quantity.mag_is_array == 1:
-            raise Exception('Array valued quantities cannot be used to define new quantities.')
-        # Split up the string of symbols
-        cdef list symbols_list = [
-            s.strip() for s in symbols.strip().split(' ') if s.strip() != '']
-        # Populating the registry dicts.
-        cdef tuple quantity_as_tuple = quantity.as_tuple()
-        if not quantity_as_tuple in self._inverse_symbol_cache:
-            # Prepare the inverse symbol cache.
-            self._inverse_symbol_cache[quantity_as_tuple] = []
-
-        # Add the list of symbols. We can use this dict to find all the
-        # allowed symbols for a given quantity. For example, 'm metre metres'
-        # if we have a quantity and can find it in the inverse symbol cache,
-        # we will be able to see that each of 'm', 'metre' and 'metres' are
-        # valid symbols for this quantity definition.
-        self._inverse_symbol_cache[quantity_as_tuple] += symbols_list
-
-        # Add each of the symbols to the symbols dict.  The same quantity is
-        # simply repeated. The symbols dict is the opposite of the inverse
-        # symbol cache. Given a (string) symbol, we can immediately find
-        # the quantity object that the symbol maps to.
-        for s in symbols_list:
-            if s in symbols_list:
-                raise Exception('Symbol "{}" already created!'.format(s))
-            self._symbol_cache[s] = quantity
-            # Inject the symbol into the module namespace.
-            exec('global {s}; {s} = quantity'.format(s=s))
-
-        # Use the first symbol to populate the representation dict.
-        # Note that the representation dict is keyed by the unit tuple.
-        # It is basically a reverse lookup, which returns the symbol string
-        # to use for representation.
-        cdef tuple unit = quantity.unit_as_tuple()
-        # Only add if not already added.  Can always be changed manually
-        # later.
-        if not unit in self._representation_cache:
-            self._representation_cache[unit] = symbols_list[0]
-
-        if quantity_name != None:
-            self.define(quantity, quantity_name)
-
-    cpdef int defined(self, Quantity q):
-        ''' Given a quantity, will return a boolean value indicating
-        whether the unit string of the given quantity has been defined
-        as a known quantity, like LENGTH or MASS. '''
-        cdef tuple unit = q.unit_as_tuple()
-        return unit in self._name_by_unit
-
-    cpdef str describe(self, Quantity q):
-        ''' If the units of the given quantity have been defined as a
-        quantity, the string describing the quantity will be returned here,
-        otherwise an exception will be raised. '''
-        cdef tuple unit = q.unit_as_tuple()
-        try:
-            return self._name_by_unit[unit]
-        except:
-            raise Exception('The units have not been defined as a quantity.')
-
-    def define(self, Quantity q, str quantity_name):
-        cdef tuple unit = q.unit_as_tuple()
-        if quantity_name != None:
-            name = quantity_name.replace(' ', '_').upper()
-            if name in self._unit_by_name:
-                raise Exception('This name has already been defined.')
-            if unit in self._name_by_unit:
-                raise Exception('This unit has already been defined as "{}"'.format(name))
-            self._unit_by_name[name] = unit
-            self._name_by_unit[unit] = name
-
-    def set_represent(self, tuple unit, as_quantity=None, symbol='',
-        convert_function=None, format_spec='.4g'):
-        ''' The given unit tuple will always be presented in the units
-        of "as_quantity", and with the overridden symbol "symbol" if
-        given. '''
-
-    def __getattr__(self, name):
-        ''' Will return a unit string representing a defined quantity. '''
-        try:
-            return self._unit_by_name[name]
-        except:
-            raise Exception('Quantity type "{}" not defined.'.format(name))
-
-
 REPRESENTCACHE = {}
-
 
 # The unit registry is a lookup list where you can find a specific
 # UnitDefinition from a particular symbol.  Note that multiple entries
@@ -185,20 +76,6 @@ REPRESENTCACHE = {}
 # there can be many synonyms for a particular unit, e.g.
 # s, sec, secs, seconds
 UNITREGISTRY = {}
-class UnitDefinition(object):
-    def __init__(self, symbols, quantity, notes):
-        self.symbols = [s.strip() for s in symbols.strip().split(' ') if s.strip() != '']
-        self.quantity = quantity
-        self.notes = notes
-        for s in self.symbols:
-            try:
-                UNITREGISTRY[s] = self
-                exec('global {s}; {s} = quantity'.format(s=s))
-            except:
-                print 'Error create UNITREGISTRY entry for symbol: {}'.format(s)
-
-
-cdef array _nou  = array('d', [0,0,0,0,0,0,0])
 
 
 @cython.freelist(8)
@@ -556,11 +433,31 @@ cdef class Quantity:
         See https://docs.scipy.org/doc/numpy-1.15.0/reference/ufuncs.html#ufuncs
         and https://github.com/numpy/numpy/blob/v1.15.1/numpy/lib/mixins.py#L63-L183
 
+        Notes:
+        ------
+        Not all ufuncs are implemented. Implementing the rest is straigth forward, but 
+        will be quite verbose.
+
         """
 
-        trigonometric_ufuncs = ( 'sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan',
-                'sinh', 'cosh', 'tanh', 'arcsinh', 'arccosh',
-                'arctanh', 'deg2rad', 'rad2deg')
+        cdef Quantity ans
+
+        ufuncs_1inp_dimensionless_in_out = ( 'sin', 'cos', 'tan', 'arcsin', 'arccos',
+                'arctan', 'sinh', 'cosh', 'tanh', 'arcsinh', 'arccosh', 'arctanh',
+                'deg2rad', 'rad2deg', 'exp', 'exp2', 'log', 'log2', 'log10', 'expm1',
+                'log1p')
+
+        ufuncs_1inp_nounit_out = ('sign', 'isfinite', 'isinf', 'isnan', 'isnat', 'fabs',
+                'signbit')
+
+        ufuncs_1inp_same_unit_in_out = ('absolute', 'fabs', 'rint', 'floor', 'ceil',
+                'trunc')
+
+        ufuncs_2inp_same_unit_in_out = ('maximum', 'minimum', 'fmin', 'fmax')
+
+        ufuncs_2inp_no_unit_out = ('greater', 'greater_equal', 'less', 'less_equal',
+                'not_equal', 'equal', 'logical_and', 'logical_or', 'logical_xor',
+                'logical_not')
 
         print ufunc.__name__
         if ufunc.__name__ == 'add':
@@ -579,78 +476,52 @@ cdef class Quantity:
             return Quantity._pos(*inputs)
         elif ufunc.__name__ == 'power':
             return Quantity._pow(*inputs)
-        elif ufunc.__name__ == 'less':
-            return Quantity._richcmp(*inputs, 0)
-        elif ufunc.__name__ == 'less_equal':
-            return Quantity._richcmp(*inputs, 1)
-        elif ufunc.__name__ == 'equal':
-            return Quantity._richcmp(*inputs, 2)
-        elif ufunc.__name__ == 'not_equal':
-            return Quantity._richcmp(*inputs, 3)
-        elif ufunc.__name__ == 'greater':
-            return Quantity._richcmp(*inputs, 4)
-        elif ufunc.__name__ == 'greater_equal':
-            return Quantity._richcmp(*inputs, 5)
         elif ufunc.__name__ == 'right_shift':
             return Quantity._rshift(*inputs)
-        elif ufunc.__name__ in trigonometric_ufuncs:
-            Quantity._check_dimensionless(inputs[0])
-            return getattr(ufunc, method)(inputs[0].magnitude, **kwargs)
         else:
-            return NotImplemented
+            if 'out' in kwargs:
+                raise NotImplementedError("Keyword argument 'out' not supported.")
+            if ufunc.__name__ in ufuncs_1inp_dimensionless_in_out:
+                Quantity._check_dimensionless(inputs[0])
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                return ans
+            elif ufunc.__name__ in ufuncs_1inp_nounit_out:
+                return getattr(ufunc, method)(inputs[0].magnitude, **kwargs)
+            elif ufunc.__name__ in ufuncs_1inp_same_unit_in_out:
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                copyunits(self, ans, 1)
+                return ans
+            elif ufunc.__name__ in ufuncs_2inp_same_unit_in_out:
+                sameunits(inputs[0], inputs[1])
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, inputs[1].magnitude, **kwargs))
+                copyunits(self, ans, 1)
+                return ans
+            elif ufunc.__name__ in ufuncs_2inp_no_unit_out:
+                sameunits(inputs[0], inputs[1])
+                return getattr(ufunc, method)(inputs[0].magnitude, inputs[1].magnitude, **kwargs)
+            elif ufunc.__name__ =='sqrt':
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                copyunits(self, ans, 0.5)
+                return ans
+            elif ufunc.__name__ =='square':
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                copyunits(self, ans, 2)
+                return ans
+            elif ufunc.__name__ =='cbrt':
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                copyunits(self, ans, 1./3.)
+                return ans
+            elif ufunc.__name__ =='reciprocal':
+                ans = Quantity.__new__(Quantity, getattr(ufunc, method)(inputs[0].magnitude, **kwargs))
+                copyunits(self, ans, -1)
+                return ans
+            else:
+                return NotImplemented
 
+    def __array__(self):
+        if self.mag_is_array == 1:
+            return self._magnitudeNP
+        else:
+            return self._magnitude
+        
 
-
-
-
-
-        # out = kwargs.get('out', ())
-        # for x in inputs + out:
-        #     # Only support operations with instances of _HANDLED_TYPES.
-        #     # Use ArrayLike instead of type(self) for isinstance to
-        #     # allow subclasses that don't override __array_ufunc__ to
-        #     # handle ArrayLike objects.
-        #     if not isinstance(x, self._HANDLED_TYPES + (ArrayLike,)):
-        #         return NotImplemented
-        # Defer to the implementation of the ufunc on unwrapped values.
-        # inputs = tuple(x.magnitude if isinstance(x, Quantity) else x
-        #                 for x in inputs)
-        # # if out:
-        # #     kwargs['out'] = tuple(
-        # #         x.value if isinstance(x, ArrayLike) else x
-        # #         for x in out)
-        # result = getattr(ufunc, method)(*inputs, **kwargs)
-        # print ufunc.__name__
-        # return result
-        # if type(result) is tuple:
-        #     # multiple return values
-        #     return tuple(type(self)(x) for x in result)
-        # elif method == 'at':
-        #     # no return value
-        #     return None
-        # else:
-        #     # one return value
-        #     return type(self)(result)
-
-
-
-        # print ufunc
-        # print method
-        # print inputs
-        # print kwargs
-        # if self.mag_is_array == 1:
-        #     return self.magnitude.__array_ufunc__(ufunc, method, *inputs, **kwargs)
-        # else:
-        #     return NotImplemented
-
-    # def __array__(self, dtype = []):
-    #     """Support numpy ufuncs.
-
-    #     see https://docs.scipy.org/doc/numpy-1.14.0/reference/arrays.classes.html
-    #     """
-    #     pass
-
-
-
-
-# https://docs.scipy.org/doc/numpy/reference/generated/numpy.lib.mixins.NDArrayOperatorsMixin.html#numpy.lib.mixins.NDArrayOperatorsMixin

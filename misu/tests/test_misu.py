@@ -30,7 +30,7 @@ a.setrepresent(u.kg/u.hr, 'kg/hr')
 b.setrepresent(u.kg/u.hr, 'kg/hr')
 
 def lookup_type(quantity):
-    return 'Quantity: {} Type: {}'.format(quantity, quantity.unitCategory())
+    return 'Quantity: {} Type: {}'.format(quantity, quantity.unitcategory())
 
 
 def test_representation():
@@ -202,10 +202,10 @@ def test_func_decorator1():
     assert 'At Re = {:.2f}, friction factorH = {:.5f}'.format(Re, fH) \
         == 'At Re = 452225.52, friction factorH = 0.01359'
 
-    assert 'f.unitCategory() = {}'.format(f.unitCategory()) \
-        == 'f.unitCategory() = Dimensionless'
-    assert 'fH.unitCategory() = {}'.format(fH.unitCategory()) \
-        == 'fH.unitCategory() = Dimensionless'
+    assert 'f.unitcategory() = {}'.format(f.unitcategory()) \
+        == 'f.unitcategory() = Dimensionless'
+    assert 'fH.unitcategory() = {}'.format(fH.unitcategory()) \
+        == 'fH.unitcategory() = Dimensionless'
 
     # The friction factor can then be used to calculate the
     # expected drop in pressure produced by flow through a
@@ -347,8 +347,8 @@ def test_numpy_sin():
     mags = np.array([ 0.08400557, 0.19897197, 0.12407021, 0.11867142])
     x = mags * u.kN
     print(np.sin(x/u.kN))
-    # assert np.allclose(np.sin(mags) , np.sin(x/u.kN))
-    # assert np.allclose(np.sin(mags), np.sin(x >> u.kN))
+    assert np.allclose(np.sin(mags) , np.sin(x/u.kN))
+    assert np.allclose(np.sin(mags), np.sin(x >> u.kN))
 
 
 if __name__ == '__main__':
