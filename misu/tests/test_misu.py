@@ -127,8 +127,8 @@ def test_si_prefixes():
 
 
 def test_conversions():
-    assert 1*u.m >> u.ft == 3.280839895013123
-    assert 100*u.kg >> u.lb == 220.46226218487757
+    assert 1*u.m.to(u.ft) == 3.280839895013123
+    assert 100*u.kg.to(u.lb) == 220.46226218487757
 
 
 def test_unit_category():
@@ -323,7 +323,7 @@ def test_numpy_addition():
     x = np.array([1, 2, 3]) * u.kg
     y = np.array([1, 2, 3]) * u.lb
     assert repr(x+y) == '[1.45 2.91 4.36] kg'
-    lbval = x+y >> u.lb
+    lbval = (x+y).to(u.lb)
     assert np.allclose(lbval,
         np.array([3.20462262,  6.40924524,  9.61386787]))
 
@@ -340,16 +340,36 @@ def test_numpy_slice():
     assert repr(x[3]) == '0.1187 kg/hr'
 
 def test_abs():
-    mags = np.array([ 1.2, 1.6]) * u.kN
-    print(abs(mags))
+    mags = np.array([ -1.2, 1.6]) * u.kN
+    assert repr(abs(mags)) == '[1.2e+03 1.6e+03] N'
 
 def test_numpy_sin():
     mags = np.array([ 0.08400557, 0.19897197, 0.12407021, 0.11867142])
     x = mags * u.kN
-    print(np.sin(x/u.kN))
     assert np.allclose(np.sin(mags) , np.sin(x/u.kN))
-    assert np.allclose(np.sin(mags), np.sin(x >> u.kN))
+    assert np.allclose(np.sin(mags), np.sin(x.to(u.kN)))
 
+def test_numpy_reshape():
+    a = np.linspace(1,2,8) * u.mV
+    b = np.reshape(a, (2,2,2))
+    assert repr(b) == '[[[0.001 0.00114]\n  [0.00129 0.00143]]\n\n [[0.00157 0.00171]\n  [0.00186 0.002]]] V'
+
+# def test_numpy_sum(self):
+#     a = np.linspace(1,2,8) * u.mV
+#     b = np.reshape(a, (2,2,2))
+#     print(b)
+
+# def test_numpy_var(self):
+#     a = np.linspace(1,2,8) * u.mV
+#     b = np.reshape(a, (2,2,2))
+#     print(b)
+
+# def test_numpy_squeeze(self):
+#     a = np.linspace(1,2,8) * u.mV
+#     b = np.reshape(a, (2,2,2))
+#     print(b)
 
 if __name__ == '__main__':
-    test_numpy_sin()
+    test_abs()
+    test_numpy_reshape()
+    test_conversions()

@@ -311,7 +311,7 @@ class UnitNamespace(object):
         sidict = self._get_si_dict(quant)
         si_quant = engine.Quantity(1)
         si_quant.setunitdict(sidict)
-        res = quant.convert(si_quant)
+        res = quant.to(si_quant)
         return res
 
     def quantity_from_string(self, string):
@@ -453,7 +453,7 @@ def calc_unitless(out_unit_list, **in_unit_kwargs):
                 )
             conv_kwargs = {}
             for kk in in_unit_kwargs.keys():
-                conv_kwargs[kk] = kwargs[kk].convert(in_unit_kwargs[kk])
+                conv_kwargs[kk] = kwargs[kk].to(in_unit_kwargs[kk])
 
             # call the function and convert the result.
             res = func(**conv_kwargs)

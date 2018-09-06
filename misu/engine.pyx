@@ -84,7 +84,7 @@ cdef class Quantity:
     cdef readonly np.ndarray _magnitudeNP
     cdef readonly int mag_is_array
     cdef uarray unit
-    __array_priority__ = 20.0
+    __array_priority__ = 100.0
 
     def __cinit__(self, magnitude):
         if not isinstance(magnitude, np.ndarray):
@@ -135,6 +135,15 @@ cdef class Quantity:
         for i from 0 <= i < 7:
             self.unit[i] = unit[i]
 
+    def to(self, Quantity target_unit):
+        """Express the Quantity in another compatible unit and strip the units.
+
+        """
+        assert isquantity(target_unit), 'Target must be a quantity.'
+        assert target_unit.mag_is_array == 0, 'Target must be scalar not an array.'
+        sameunits(self, target_unit)
+        return self.magnitude / target_unit.magnitude
+
     def setrepresent(self, as_unit=None, symbol='',
         convert_function=None, format_spec='.4g'):
         '''By default, the target representation is arrived by dividing
@@ -160,7 +169,7 @@ cdef class Quantity:
 
         if convert_function == None:
             def proportional_conversion(instance, _):
-                return instance.convert(as_unit)
+                return instance.to(as_unit)
             convert_function = proportional_conversion
         REPRESENTCACHE[self.unit_as_tuple()] = dict(
             convert_function=convert_function,
@@ -393,30 +402,19 @@ cdef class Quantity:
         return ans
 
     @staticmethod
-    def _rshift(x, y):
-        return x.convert(y)
-
-    def __rshift__(x, y):
-        """ Use quantity1 >> quantity2 to get the value of quantity1 in quantity2"""
-        return Quantity._rshift(x, y)
-
-    def convert(self, Quantity target_unit):
-        assert isquantity(target_unit), 'Target must be a quantity.'
-        assert target_unit.mag_is_array == 0, 'Target must be scalar not an array.'
-        sameunits(self, target_unit)
-        return self.magnitude / target_unit.magnitude
-
-    @staticmethod
     def _check_dimensionless(x):
         if x.unitcategory() != 'Dimensionless':
             raise EIncompatibleUnits('Argument must be dimensionless.')
 
+    def _new_quantity(self, array):
+        cdef Quantity ans = Quantity.__new__(Quantity, array)
+        copyunits(self, ans, 1)
+        return ans
+        
     # ------ Implement numpy functionality ------
 
     def copy(self):
-        cdef Quantity ans = Quantity.__new__(Quantity, self.magnitude)
-        copyunits(self, ans, 1)
-        return ans
+        return self._new_quantity(self.magnitude)
 
     def __getitem__(self, val):
         """Slicing for ndarray valued Quantities"""
@@ -432,6 +430,9 @@ cdef class Quantity:
 
         See https://docs.scipy.org/doc/numpy-1.15.0/reference/ufuncs.html#ufuncs
         and https://github.com/numpy/numpy/blob/v1.15.1/numpy/lib/mixins.py#L63-L183
+
+        Also informative as an example:
+        https://pydl.readthedocs.io/en/latest/_modules/astropy/units/quantity.html
 
         Notes:
         ------
@@ -522,6 +523,11 @@ cdef class Quantity:
         if self.mag_is_array == 1:
             return self._magnitudeNP
         else:
+            # TODO: Do we need to convert to an ndarray here?
             return self._magnitude
-        
 
+    def __array_wrap__(self, obj, context=None):
+        if context == None:
+            return self._new_quantity(obj)
+        else:
+            raise NotImplementedError("Not yet implemented")
